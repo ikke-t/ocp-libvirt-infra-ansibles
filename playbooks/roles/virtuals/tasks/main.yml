@@ -37,7 +37,7 @@
   with_dict: "{{ virtual_machines }}"
 
 - name: create cloud-init CDs for VMs
-  command: /usr/bin/genisoimage -o "/var/lib/libvirt/images/cloud-init-{{ item.key }}.iso" -V cidata -r -J meta-data user-data
+  command: /usr/bin/genisoimage -o "/var/lib/libvirt/images/cloud-init-{{ item.key }}.iso" -V cidata -r -J meta-data user-data network-config
   args:
     chdir: "/tmp/{{ item.key }}" 
     creates: "/var/lib/libvirt/images/cloud-init-{{ item.key }}.iso"

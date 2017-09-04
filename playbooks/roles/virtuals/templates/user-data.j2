@@ -3,14 +3,6 @@
 users:
   - default
 
-bootcmd:
-  - systemctl disable --now NetworkManager
-  - echo -e "ADDRESS0=0.0.0.0\nNETMASK0=0.0.0.0\nGATEWAY0={{ item.value.gateway }}" > /etc/sysconfig/network-scripts/route-eth0
-  - grep -q DNS /etc/sysconfig/network-scripts/ifcfg-eth0 || echo -e  "PEERDNS=no\nDNS1={{ item.value.gateway }}\nDNS2=8.8.8.8" >>/etc/sysconfig/network-scripts/ifcfg-eth0
-  - ifdown eth0
-  - ifup eth0
-
-
 rh_subscription:
   username: "{{ rh_sub_user }}"
   password: "{{ rh_sub_password }}"
