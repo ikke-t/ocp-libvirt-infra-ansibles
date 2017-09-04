@@ -1,0 +1,45 @@
+---
+
+- name: stop virtual machines
+  ignore_errors: yes
+  virt:
+    name: "{{ item.key }}"
+    state: destroyed
+  with_dict: "{{ virtual_machines }}"
+
+- name: undefine virtual machines
+  ignore_errors: yes
+  virt:
+    name: "{{ item.key }}"
+    command: undefine
+  with_dict: "{{ virtual_machines }}"
+
+- name: delete cloud-init CDs for VMs
+  file:
+    path: "/var/lib/libvirt/images/cloud-init-{{ item.key }}.iso"
+    state: absent
+  with_dict: "{{ virtual_machines }}"
+
+- name: delete dirs for userdata
+  file:
+    path: "/tmp/{{ item.key }}"
+    state: absent
+  with_dict: "{{ virtual_machines }}"
+
+- name: delete logical volumes for virtual os disks
+  lvol:
+    vg: "{{ volume_group }}"
+    lv: "{{ item.value.root_disk_name }}"
+    state: absent
+    force: yes
+  with_dict: "{{ virtual_machines }}"
+
+- name: delete logical volumes for virtual docker disks
+  lvol:
+    vg: "{{ volume_group }}"
+    lv: "{{ item.value.docker_disk_name }}"
+    state: absent
+    force: yes
+  with_dict: "{{ virtual_machines }}"
+
+

@@ -1,0 +1,11 @@
+network:
+  version: 2
+  ethernets:
+    eth0:
+      dhcp4: false
+      addresses:
+        - {{ item.value.address }}/24
+      gateway4: {{ item.value.gateway }}
+      nameservers:
+        addresses: [8.8.8.8]
+

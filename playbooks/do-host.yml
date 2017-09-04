@@ -1,0 +1,9 @@
+---
+
+- name: prepare virtualization host
+  vars_files:
+    - vars/main.yml 
+  hosts: isanta.pilivi.fi
+  roles:
+    - common
+    - virt-host

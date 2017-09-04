@@ -1,0 +1,61 @@
+---
+ansible_user: root
+ansible_become: false
+
+rhel_image: rhel-7-kvm.qcow2
+volume_group: vg0
+
+virtual_machines:
+  bastion:
+    root_disk_name: bastion-a
+    root_disk_size: 10g
+    docker_disk_name: bastion-b
+    docker_disk_size: 10g
+    memory: 8
+    cpus: 2
+    address: 192.168.122.2
+    network: 192.168.122.0
+    broadcast: 192.168.122.255
+    gateway: 192.168.122.1
+  ocp-master:
+    root_disk_name: ocp-master-a
+    root_disk_size: 20g
+    docker_disk_name: ocp-master-b
+    docker_disk_size: 20g
+    memory: 8
+    cpus: 2
+    address: 192.168.122.10
+    network: 192.168.122.0
+    broadcast: 192.168.122.255
+    gateway: 192.168.122.1
+  ocp-infra:
+    root_disk_name: ocp-infra-a
+    root_disk_size: 20g
+    docker_disk_name: ocp-infra-b
+    docker_disk_size: 60g
+    memory: 16
+    cpus: 4
+    address: 192.168.122.20
+    network: 192.168.122.0
+    broadcast: 192.168.122.255
+    gateway: 192.168.122.1
+  ocp-apps1:
+    root_disk_name: ocp-apps1-a
+    root_disk_size: 20g
+    docker_disk_name: ocp-apps1-b
+    docker_disk_size: 60g
+    memory: 16
+    cpus: 4
+    address: 192.168.122.30
+    network: 192.168.122.0
+    broadcast: 192.168.122.255
+    gateway: 192.168.122.1
+
+rh_sub_user: <your red hat id here>
+rh_sub_password: 'your red hat account password here'
+rh_sub_pool: 8a85f9843e3d687a013e3ddd46dd07f1 
+
+guest_default_pw: 'password here'
+guest_authorized_key: 'ssh-rsa AAAA...your...ssh...pubkey'
+
+

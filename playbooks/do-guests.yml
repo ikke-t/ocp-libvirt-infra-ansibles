@@ -1,0 +1,10 @@
+---
+
+
+- name: define and start guests
+  vars_files:
+    - vars/main.yml 
+  hosts: isanta.pilivi.fi
+  roles:
+    - virtuals
+

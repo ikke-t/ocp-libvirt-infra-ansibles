@@ -1,0 +1,25 @@
+---
+
+- name: install virtualization tools
+  package: name={{ item }} state=present 
+  with_items:
+    - bridge-utils
+    - qemu-kvm
+    - qemu-img
+    - libvirt
+    - libvirt-python
+    - libvirt-client
+    - virt-install
+    - libguestfs-tools
+    - libguestfs-bash-completion
+    - genisoimage
+
+- name: ensure rhel template exists
+  copy:
+    src: "{{ rhel_image }}"
+    dest: "/var/lib/libvirt/images/{{ rhel_image }}"
+    owner: qemu
+    group: qemu
+    mode: 0644
+
+

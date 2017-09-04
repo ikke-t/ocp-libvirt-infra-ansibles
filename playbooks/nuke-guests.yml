@@ -1,0 +1,9 @@
+---
+
+- name: delete everything related to guests
+  vars_files:
+    - vars/main.yml 
+  hosts: isanta.pilivi.fi
+  roles:
+    - nuke-virtuals
+

@@ -1,0 +1,79 @@
+---
+
+- name: create dirs for userdata
+  file:
+    path: "/tmp/{{ item.key }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+  with_dict: "{{ virtual_machines }}"
+
+- name: create user-data files
+  template: 
+    src: user-data.j2
+    dest: "/tmp/{{item.key}}/user-data"
+    owner: root
+    group: root
+    mode: '0600'
+  with_dict: "{{ virtual_machines }}"
+
+- name: create meta-data files
+  template: 
+    src: meta-data.j2
+    dest: "/tmp/{{ item.key }}/meta-data"
+    owner: root
+    group: root
+    mode: '0600'
+  with_dict: "{{ virtual_machines }}"
+
+- name: create network-config files
+  template: 
+    src: network-config.j2
+    dest: "/tmp/{{ item.key }}/network-config"
+    owner: root
+    group: root
+    mode: '0600'
+  with_dict: "{{ virtual_machines }}"
+
+- name: create cloud-init CDs for VMs
+  command: /usr/bin/genisoimage -o "/var/lib/libvirt/images/cloud-init-{{ item.key }}.iso" -V cidata -r -J meta-data user-data
+  args:
+    chdir: "/tmp/{{ item.key }}" 
+    creates: "/var/lib/libvirt/images/cloud-init-{{ item.key }}.iso"
+  with_dict: "{{ virtual_machines }}"
+
+- name: ensure logical volumes for virtual os disks
+  lvol:
+    vg: "{{ volume_group }}"
+    lv: "{{ item.value.root_disk_name }}"
+    size: "{{ item.value.root_disk_size }}"
+  with_dict: "{{ virtual_machines }}"
+
+- name: ensure logical volumes for virtual docker disks
+  lvol:
+    vg: "{{ volume_group }}"
+    lv: "{{ item.value.docker_disk_name }}"
+    size: "{{ item.value.docker_disk_size }}"
+  with_dict: "{{ virtual_machines }}"
+
+- name: install rhel for VMs
+  tags: qemu_root_disks
+  command: qemu-img convert -O raw "/var/lib/libvirt/images/{{ rhel_image }}" "/dev/vg0/{{ item.value.root_disk_name }}"
+  with_dict: "{{ virtual_machines }}"
+
+- name: define virtual machines
+  tags: define
+  virt:
+    name: "{{ item.key }}"
+    command: define
+    xml: "{{ lookup('template', 'vm.xml.j2') }}"
+  with_dict: "{{ virtual_machines }}"
+
+- name: start virtual machines
+  tags: create
+  virt:
+    name: "{{ item.key }}"
+    state: running
+  with_dict: "{{ virtual_machines }}"
+

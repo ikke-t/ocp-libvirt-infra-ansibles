@@ -1,0 +1,11 @@
+
+---
+
+- name: install common tools
+  package: name={{ item }} state=present 
+  with_items:
+    - tmux
+    - mosh
+    - nmap
+    - w3m
+    - bc
