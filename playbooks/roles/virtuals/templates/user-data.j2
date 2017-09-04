@@ -22,9 +22,8 @@ runcmd:
  
 chpasswd:
   list: |
-     root:"{{ guest_default_pw }}"
-     cloud-user:"{{ guest_default_pw }}"
-     ikke:"{{ guest_default_pw }}"
+     root:{{ guest_default_pw }}
+     cloud-user:{{ guest_default_pw }}
   expire: False
 
 timezone: Europe/Helsinki
