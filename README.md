@@ -7,7 +7,7 @@ Personally I use this to setup demoes for OpenShift. I use this ansible to creat
 # Usage
 
 1. Do git clone this repo.
-2. Download RHEL image and save it to: ```playbooks/roles/virt-host/files/rhel-7-kvm.qcow2```. You get it here for free: https://access.redhat.com/downloads/content/69/ver=/rhel---7/latest/x86_64/product-software
+2. Download RHEL KVM image and save it to: ```playbooks/roles/virt-host/files/rhel-7-kvm.qcow2```. You get it here for free: https://access.redhat.com/downloads/content/69/ver=/rhel---7/latest/x86_64/product-software
 3. Create a settings file into: `playbooks/vars/main.yml`. There is example file available: `playbooks/vars/example-main.yml`
 4. you can add and remove hosts by adding entries into virtual_machines table in the above settings file
 5. run ansible to setup the host: `ansible-playbook -i hosts do-host.yml`
