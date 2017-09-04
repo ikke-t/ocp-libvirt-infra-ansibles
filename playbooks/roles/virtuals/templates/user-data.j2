@@ -2,14 +2,6 @@
 
 users:
   - default
-  - name: ikke
-    gecos: Ilkka Tengvall
-    groups: users, wheel
-    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
-    ssh_pwauth: True
-    ssh-authorized-keys:
-      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDO7ySdj05XSrFE72rmlX35A4DlF9D7zp1fvlMckoCzW++3PW9D0E6uAIBLldul8cv2AE9/LbEuzbaNVgYIQmR++rA+Pb9FhlO+4+u6HIjLj8bAYMbM+TLNpbH/KsfJHaKqNL2zaui25SCqgTJnyLgnikNyRr3VJxUYhfiBBrdldYT+9V5U/PoWawIB0iemG75BlZR0jv/9xqUCnx209E3CeFLODr5Qbk5psEuOHVkkFvmYL8RXtWr4rPJ/7Mp+bYEgpFyYkfFrf9mJwg9jc4lh5dvU1KkUF7+RG85vf6bU72BuSemXKQIDXU9VJpWcIO3YyAZa3zBdCr8+X+SkN4kJ root@isanta.pilivi.fi
-      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC577GzJaVha0u0byNEFLDbGQhMkPSyXeT9gqIfZMKIxgh9PhOjpHl739lcdbsbgiUVAjZYI7M3PwuGghYTZpk2amJEZXUrul2MQudEc5tUX9wbpdKx9PEhzCywynRN+ZWGK15R5uVyc8mhqbvE0xQnkX0d+/eh+K8reFw451rPJuXrbbk13x/KBs/WqjEGCe6Yto/BotRRadpxTP5gPTxs/MIZ9LZC5EjmuOxDVt1xNROUNdD7gdK8DdpAHK72OoaT5ooc3Zq9uum4sYhCc611IGMNy2yjaYsJWWiVpDFy+APs5u9oK7wdtYFZwhf6B1O3U1X21CoaU8nJsFxJmI1g32IaAfh18sGiTBKKu8vYfF1y2eHa0I/App5WI+H5BS9WV7QyW5s7FQQ9R0okZ3kWbiGj8tVcVdTviwKmNm/7FtED6vPDe9ji+ou56YyzX7sd8ZFZjCX4rG9ZfpCzwsCCRdYHcKEyTIM5is9aggSUVWIkhdD9IKKsJEuW2ZCo8zpVMqSKm4G05tieIAGGr546m1OiTVBFVzuhYuTmwGuVfR0szoDCV6nOc1vcZMLyWYM5zWZRMuCw6NMzMuL+ot0JXyVKtgfFt4q5Q+Ha87jYXsiLOezsTiycgG1c/HmF4NxfWHt8nkDP/hQI0ESb1AKqxqp3++mCciHd1PlE/Y1CaQ== itengval@redhat
 
 bootcmd:
   - systemctl disable --now NetworkManager
