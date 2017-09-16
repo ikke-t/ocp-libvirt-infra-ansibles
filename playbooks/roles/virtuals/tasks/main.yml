@@ -53,8 +53,8 @@
 - name: ensure logical volumes for virtual docker disks
   lvol:
     vg: "{{ volume_group }}"
-    lv: "{{ item.value.docker_disk_name }}"
-    size: "{{ item.value.docker_disk_size }}"
+    lv: "{{ item.value.secondary_disk_name }}"
+    size: "{{ item.value.secondary_disk_size }}"
   with_dict: "{{ virtual_machines }}"
 
 - name: install rhel for VMs

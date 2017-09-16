@@ -9,8 +9,8 @@ virtual_machines:
   bastion:
     root_disk_name: bastion-a
     root_disk_size: 10g
-    docker_disk_name: bastion-b
-    docker_disk_size: 10g
+    secondary_disk_name: bastion-b
+    secondary_disk_size: 10g
     memory: 8
     cpus: 2
     address: 192.168.122.2
@@ -20,8 +20,8 @@ virtual_machines:
   ocp-master:
     root_disk_name: ocp-master-a
     root_disk_size: 20g
-    docker_disk_name: ocp-master-b
-    docker_disk_size: 20g
+    secondary_disk_name: ocp-master-b
+    secondary_disk_size: 20g
     memory: 8
     cpus: 2
     address: 192.168.122.10
@@ -31,8 +31,8 @@ virtual_machines:
   ocp-infra:
     root_disk_name: ocp-infra-a
     root_disk_size: 20g
-    docker_disk_name: ocp-infra-b
-    docker_disk_size: 60g
+    secondary_disk_name: ocp-infra-b
+    secondary_disk_size: 60g
     memory: 16
     cpus: 4
     address: 192.168.122.20
@@ -42,8 +42,8 @@ virtual_machines:
   ocp-apps1:
     root_disk_name: ocp-apps1-a
     root_disk_size: 20g
-    docker_disk_name: ocp-apps1-b
-    docker_disk_size: 60g
+    secondary_disk_name: ocp-apps1-b
+    secondary_disk_size: 60g
     memory: 16
     cpus: 4
     address: 192.168.122.30
