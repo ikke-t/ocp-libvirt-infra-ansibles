@@ -1,0 +1,65 @@
+---
+ansible_user: root
+ansible_become: false
+
+rhel_image: rhel-7-kvm.qcow2
+volume_group: vg0
+
+bastion_name: bastion
+master_name: ocp-master
+infra_name: ocp-infra
+apps1_name: ocp_apps1
+
+
+virtual_machines:
+  bastion:
+    root_disk_name: bastion-a
+    root_disk_size: 10g
+    secondary_disk_name: bastion-b
+    secondary_disk_size: 10g
+    memory: 8
+    cpus: 2
+    address: 192.168.122.2
+    network: 192.168.122.0
+    broadcast: 192.168.122.255
+    gateway: 192.168.122.1
+  ocp-master:
+    root_disk_name: ocp-master-a
+    root_disk_size: 20g
+    secondary_disk_name: ocp-master-b
+    secondary_disk_size: 20g
+    memory: 8
+    cpus: 2
+    address: 192.168.122.10
+    network: 192.168.122.0
+    broadcast: 192.168.122.255
+    gateway: 192.168.122.1
+  ocp-infra:
+    root_disk_name: ocp-infra-a
+    root_disk_size: 20g
+    secondary_disk_name: ocp-infra-b
+    secondary_disk_size: 60g
+    memory: 16
+    cpus: 4
+    address: 192.168.122.20
+    network: 192.168.122.0
+    broadcast: 192.168.122.255
+    gateway: 192.168.122.1
+  ocp-apps1:
+    root_disk_name: ocp-apps1-a
+    root_disk_size: 20g
+    secondary_disk_name: ocp-apps1-b
+    secondary_disk_size: 60g
+    memory: 16
+    cpus: 4
+    address: 192.168.122.30
+    network: 192.168.122.0
+    broadcast: 192.168.122.255
+    gateway: 192.168.122.1
+
+rh_sub_user: "{{ vault_rh_sub_user }}"
+rh_sub_password: "{{ vault_rh_sub_password }}"
+rh_sub_pool: "{{ vault_rh_sub_pool }}"
+
+guest_default_pw: "{{ vault_guest_default_pw }}"
+guest_authorized_key: "{{ vault_guest_authorized_key }}"
