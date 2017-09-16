@@ -35,7 +35,7 @@
     </disk>
     <disk type='block' device='disk'>
       <driver name='qemu' type='raw' cache='none' io='native'/>
-      <source dev="/dev/vg0/{{ item.value.docker_disk_name }}"/>
+      <source dev="/dev/vg0/{{ item.value.secondary_disk_name }}"/>
       <target dev='vdb' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x09' function='0x0'/>
     </disk>
@@ -111,4 +111,3 @@
     </memballoon>
   </devices>
 </domain>
-
