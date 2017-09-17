@@ -2,7 +2,8 @@
 
 - name: prepare virtualization host
   vars_files:
-    - vars/main.yml 
+    - vars/vault.yml
+    - vars/main.yml
   hosts: isanta.pilivi.fi
   roles:
     - common
