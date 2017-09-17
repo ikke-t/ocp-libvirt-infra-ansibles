@@ -37,7 +37,7 @@
 - name: delete logical volumes for virtual docker disks
   lvol:
     vg: "{{ volume_group }}"
-    lv: "{{ item.value.docker_disk_name }}"
+    lv: "{{ item.value.secondary_disk_name }}"
     state: absent
     force: yes
   with_dict: "{{ virtual_machines }}"
