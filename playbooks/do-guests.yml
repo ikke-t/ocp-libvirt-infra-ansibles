@@ -8,4 +8,4 @@
   hosts: isanta.pilivi.fi
   roles:
     - virtuals
-
+    - firewall-host
