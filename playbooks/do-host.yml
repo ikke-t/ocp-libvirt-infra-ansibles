@@ -4,7 +4,7 @@
   vars_files:
     - vars/vault.yml
     - vars/main.yml
-  hosts: isanta.pilivi.fi
+  hosts: "{{ host_name }}"
   roles:
     - common
     - virt-host

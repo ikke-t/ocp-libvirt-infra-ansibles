@@ -1,11 +1,50 @@
 ---
 
-
 - name: define and start guests
   vars_files:
     - vars/vault.yml
     - vars/main.yml
-  hosts: isanta.pilivi.fi
+  hosts: "{{ host_name }}"
+  vars:
+   - ansible_user: root
+   - ansible_become: false
   roles:
     - virtuals
     - firewall-host
+
+- name: create access config for guests
+  vars_files:
+    - vars/vault.yml
+    - vars/main.yml
+  tags: access_config
+  hosts: localhost
+  connection: local
+  roles:
+    - bastion_ssh_proxy
+    - ocp_local_ansible_hosts_file
+
+- name: subscribe guests
+  vars_files:
+    - vars/vault.yml
+    - vars/main.yml
+  tags: rh-subs
+  vars:
+   - ansible_user: cloud-user
+   - ansible_become: true
+   - ssh_args: -F /tmp/tmp/ocp-bastion-ssh.config
+  hosts:
+    - bastion
+    - "{{ virtual_machines[ 'ocp-master' ].address }}"
+    - "{{ virtual_machines[ 'ocp-infra' ].address }}"
+    - "{{ virtual_machines[ 'ocp-apps1' ].address }}"
+  tasks:
+    - include_role:
+        name: rhn
+      vars:
+        enabled_repos:
+          - rhel-7-server-rpms
+          - rhel-7-server-optional-rpms
+          - rhel-7-server-extras-rpms
+          - rhel-7-server-ose-3.6-rpms
+          - rhel-7-fast-datapath-rpms
+

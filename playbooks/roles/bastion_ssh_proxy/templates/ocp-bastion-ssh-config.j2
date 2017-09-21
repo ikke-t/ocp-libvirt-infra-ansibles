@@ -1,0 +1,15 @@
+Host bastion
+  Hostname                   {{ host_name }}
+  Port                       2222
+  user                       cloud-user
+  StrictHostKeyChecking      no
+  ProxyCommand               none
+  CheckHostIP                no
+  ForwardAgent               yes
+  #IdentityFile               /path/to/ssh/key
+
+Host *
+  ProxyCommand               ssh cloud-user@{{ host_name }} -p 2222 -W %h:%p
+  ForwardAgent               yes
+  user                       cloud-user
+  #IdentityFile               /path/to/ssh/key

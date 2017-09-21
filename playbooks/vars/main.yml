@@ -1,10 +1,11 @@
 ---
-ansible_user: root
-ansible_become: false
+
+ocp_version: 3.6
 
 rhel_image: rhel-7-kvm.qcow2
 volume_group: vg0
 
+host_name: isanta.pilivi.fi
 bastion_name: bastion
 master_name: ocp-master
 infra_name: ocp-infra

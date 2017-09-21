@@ -1,0 +1,7 @@
+---
+
+- name: create local ssh config file to access VM cluster via bastion ssh proxy
+  template:
+    src: ocp-bastion-ssh-config.j2
+    dest: /tmp/ocp-bastion-ssh.config
+    mode: '0600'
