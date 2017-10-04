@@ -4,6 +4,9 @@
   vars_files:
     - vars/vault.yml
     - vars/main.yml
+  vars:
+   - ansible_user: "{{ host_user }}"
+   - ansible_become: "{{ host_become }}"
   hosts: "{{ host_name }}"
   roles:
     - common

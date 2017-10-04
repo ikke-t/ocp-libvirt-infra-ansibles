@@ -6,6 +6,8 @@ rhel_image: rhel-7-kvm.qcow2
 volume_group: vg0
 
 host_name: isanta.pilivi.fi
+host_user: root
+host_become: false
 bastion_name: bastion
 master_name: ocp-master
 infra_name: ocp-infra

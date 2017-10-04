@@ -6,8 +6,8 @@
     - vars/main.yml
   hosts: "{{ host_name }}"
   vars:
-   - ansible_user: root
-   - ansible_become: false
+   - ansible_user: "{{ host_user }}"
+   - ansible_become: "{{ host_become }}"
   roles:
     - virtuals
     - firewall-host
