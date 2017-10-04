@@ -77,3 +77,10 @@
     state: running
   with_dict: "{{ virtual_machines }}"
 
+- name: add VM guests to inventory
+  add_host:
+    hostname: "{{ item.key }}"
+    ansible_ssh_host: "{{ item.value.address }}"
+    ansible_ssh_common_args: -o ProxyCommand="ssh -W %h:%p -q {{host_user}}@{{host_name}}" -o StrictHostKeyChecking=false -o UserKnownHostsFile=/dev/null
+    groups: virtuals
+  with_dict: "{{ virtual_machines }}"

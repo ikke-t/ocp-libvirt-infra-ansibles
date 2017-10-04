@@ -31,12 +31,7 @@
   vars:
    - ansible_user: cloud-user
    - ansible_become: true
-   - ssh_args: -F /tmp/tmp/ocp-bastion-ssh.config
-  hosts:
-    - bastion
-    - "{{ virtual_machines[ 'ocp-master' ].address }}"
-    - "{{ virtual_machines[ 'ocp-infra' ].address }}"
-    - "{{ virtual_machines[ 'ocp-apps1' ].address }}"
+  hosts: virtuals
   tasks:
     - include_role:
         name: rhn
@@ -47,4 +42,3 @@
           - rhel-7-server-extras-rpms
           - rhel-7-server-ose-3.6-rpms
           - rhel-7-fast-datapath-rpms
-
