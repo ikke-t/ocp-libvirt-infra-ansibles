@@ -5,7 +5,7 @@
     dest: "/tmp/ocp_cluster_ansible_hosts"
     mode: '0600'
     content: |
-      {{ bastion_name }} ansible_ssh_port=2222 ansible_ssh_host={{ host_name }} ansible_become=true remote_user=cloud-user
-      {{ master_name }} ansible_ssh_host={{virtual_machines[ 'ocp-master' ].address}} remote_user=cloud-user
-      {{ infra_name }} ansible_ssh_host={{virtual_machines[ 'ocp-infra' ].address}} remote_user=cloud-user
-      {{ infra_name }} ansible_ssh_host={{virtual_machines[ 'ocp-apps1' ].address}} remote_user=cloud-user
+      {{ bastion_name }} ansible_ssh_host={{ virtual_machines[ 'bastion' ].address }} remote_user=cloud-user
+      {{ master_name }} ansible_ssh_host={{ virtual_machines[ 'ocp-master' ].address }} remote_user=cloud-user
+      {{ infra_name }} ansible_ssh_host={{ virtual_machines[ 'ocp-infra' ].address }} remote_user=cloud-user
+      {{ infra_name }} ansible_ssh_host={{ virtual_machines[ 'ocp-apps1' ].address }} remote_user=cloud-user

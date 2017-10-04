@@ -20,7 +20,7 @@
   hosts: localhost
   connection: local
   roles:
-    - bastion_ssh_proxy
+    - ssh_proxy
     - ocp_local_ansible_hosts_file
 
 - name: subscribe guests
