@@ -1,0 +1,60 @@
+---
+
+- name: install packages for OCP install
+  package: name={{ item }} state=present
+  with_items:
+    - docker
+    - container-selinux
+    - atomic-openshift-docker-excluder
+    - wget
+    - git
+    - net-tools
+    - bind-utils
+    - iptables-services
+    - bridge-utils
+    - bash-completion
+    - kexec-tools
+    - sos
+    - psacct
+    - NetworkManager
+
+- name: Build hosts file
+  lineinfile:
+    dest=/etc/hosts
+    regexp='.*{{ item.key }}$' line="{{ item.value.address }} {{ item.key }}"
+    state=present
+  with_dict: "{{ virtual_machines }}"
+
+- name: start NetworkManager
+  service: name=NetworkManager state=started enabled=true
+
+- name: Detect Docker storage configuration status
+  command: grep -q /dev/mapper/docker /etc/sysconfig/docker-storage
+  register: docker_storage_test
+  changed_when: false
+  failed_when: false
+
+- name: Wipe signatures from docker disk
+  command: "wipefs --all --force /dev/vdb"
+  when: docker_storage_test.rc != 0
+
+- name: Create Docker storage configuration
+  copy:
+    dest: /etc/sysconfig/docker-storage-setup
+    content: |
+      STORAGE_DRIVER=overlay2
+      DEVS=/dev/vdb
+      CONTAINER_ROOT_LV_NAME=dockerlv
+      CONTAINER_ROOT_LV_MOUNT_PATH=/var/lib/docker
+      VG=ocp
+  when: docker_storage_test.rc != 0
+
+- name: Apply Docker storage configuration changes
+  command: docker-storage-setup
+  when: docker_storage_test.rc != 0
+
+- name: Enable docker
+  command: systemctl enable docker
+
+- name: Start docker
+  command: systemctl start docker
