@@ -5,23 +5,20 @@
 
 - name: Subscribe to Red Hat
   redhat_subscription:
-    state=present
-    force_register=true
-    autosubscribe=false
-    username={{ rh_sub_user }}
-    password={{ rh_sub_password }}
-    pool={{ rh_sub_pool }}
+    state: present
+    autosubscribe: false
+    username: "{{ rh_sub_user }}"
+    password: "{{ rh_sub_password }}"
+    pool: "{{ rh_sub_pool }}"
+  register: subscribe
 
 - name: Disable all the channels
-  shell: >
-    subscription-manager repos --disable '*' &&
-    touch /root/.rh-repos-once-disabled
-    creates=/root/.rh-repos-once-disabled
+  shell: |
+    subscription-manager repos --disable='*'
+  when: subscribe.changed
 
-- name: Enable repo rhel-server
-  shell: >
-    subscription-manager repos
-    --enable="{{ item }}" &&
-    touch /root/.rh-repos-{{ item }}
-    creates=/root/.rh-repos-{{ item }}
+- name: Enable given repos
+  shell: |
+    subscription-manager repos --enable="{{ item }}"
   with_items: "{{ enabled_repos }}"
+  when: subscribe.changed
