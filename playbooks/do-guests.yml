@@ -4,10 +4,32 @@
   vars_files:
     - vars/vault.yml
     - vars/main.yml
+  tags: create-guests
   hosts: "{{ host_name }}"
   roles:
     - virt-guests
     - firewall-host
+
+- name: add VM guests to inventory and wait for being up
+  hosts: localhost
+  vars_files:
+    - vars/vault.yml
+    - vars/main.yml
+  tasks:
+    - name: add guests to inventory
+      add_host:
+        hostname: "{{ item.key }}"
+        ansible_ssh_host: "{{ item.value.address }}"
+        ansible_ssh_common_args: -o ProxyCommand="ssh -W %h:%p -q {{host_user}}@{{host_name}}" -o StrictHostKeyChecking=false -o UserKnownHostsFile=/dev/null
+        ansible_user: cloud-user
+        ansible_become: true
+        groups: virtuals
+      with_dict: "{{ virtual_machines }}"
+      tags: vms_to_inventory
+    - name: wait 300 seconds, but only start checking after 30 seconds
+      wait_for_connection:
+        delay: 30
+        timeout: 300
 
 - name: create access config for guests
   vars_files:
