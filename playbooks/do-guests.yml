@@ -5,9 +5,6 @@
     - vars/vault.yml
     - vars/main.yml
   hosts: "{{ host_name }}"
-  vars:
-   - ansible_user: "{{ host_user }}"
-   - ansible_become: "{{ host_become }}"
   roles:
     - virt-guests
     - firewall-host
