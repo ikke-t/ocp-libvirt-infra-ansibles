@@ -60,3 +60,38 @@
           - rhel-7-server-ose-3.6-rpms
           - rhel-7-fast-datapath-rpms
         when: do_subscribe
+
+- name: prepare OCP bastion
+  hosts: "{{ bastion_name }}"
+  vars_files:
+    - vars/vault.yml
+    - vars/main.yml
+  tags: prep_bastion
+  vars:
+   - ansible_user: cloud-user
+   - ansible_become: true
+  roles:
+    - ocp_bastion
+
+- name: prepare nodes
+  hosts: "{{ master_name }}, {{ infra_name }}, {{ apps1_name }}"
+  vars_files:
+    - vars/vault.yml
+    - vars/main.yml
+  tags: prep_nodes
+  roles:
+    - ocp_node
+
+- name: Infra is done, ready to install OCP
+  hosts: localhost
+  vars_files:
+    - vars/vault.yml
+    - vars/main.yml
+  gather_facts: false
+  tasks:
+  - name: Now install OCP, you must login to {{bastion_name}} to run OCP ansible installer
+    debug:
+      msg:
+      - "SSH to {{bastion_name}} to run ansible installer:"
+      - "ssh -F /tmp/ocp-bastion-ssh.config -A {{virtual_machines[ 'bastion' ].address}}""
+      - "ansible-playbook /usr/share/ansible/openshift-ansible/playbooks/byo/config.yml"
