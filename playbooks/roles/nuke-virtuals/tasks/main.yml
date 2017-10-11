@@ -42,4 +42,9 @@
     force: yes
   with_dict: "{{ virtual_machines }}"
 
-
+- name: delete logical volume for registry
+  lvol:
+    vg: "{{ volume_group }}"
+    lv: "{{ virtual_machines[ infra_name ].registry_disk_name }}"
+    state: absent
+    force: yes
