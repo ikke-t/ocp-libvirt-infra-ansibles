@@ -1,1 +1,1 @@
-isanta.pilivi.fi
+isanta.pilivi.fi ansible_user=root ansible_become=true

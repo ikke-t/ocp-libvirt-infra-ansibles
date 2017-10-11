@@ -2,8 +2,7 @@
 
 - name: delete everything related to guests
   vars_files:
-    - vars/main.yml 
-  hosts: isanta.pilivi.fi
+    - vars/main.yml
+  hosts: "{{ host_name }}"
   roles:
     - nuke-virtuals
-

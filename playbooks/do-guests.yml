@@ -47,9 +47,6 @@
     - vars/vault.yml
     - vars/main.yml
   tags: rh-subs
-  vars:
-   - ansible_user: cloud-user
-   - ansible_become: true
   hosts: virtuals
   serial: 1 # needed, as subscription-manager is such a piece of shit.
   tasks:
