@@ -10,7 +10,7 @@
   with_dict: "{{ virtual_machines }}"
 
 - name: create user-data files
-  template: 
+  template:
     src: user-data.j2
     dest: "/tmp/{{item.key}}/user-data"
     owner: root
@@ -19,7 +19,7 @@
   with_dict: "{{ virtual_machines }}"
 
 - name: create meta-data files
-  template: 
+  template:
     src: meta-data.j2
     dest: "/tmp/{{ item.key }}/meta-data"
     owner: root
@@ -28,7 +28,7 @@
   with_dict: "{{ virtual_machines }}"
 
 - name: create network-config files
-  template: 
+  template:
     src: network-config.j2
     dest: "/tmp/{{ item.key }}/network-config"
     owner: root
@@ -39,7 +39,7 @@
 - name: create cloud-init CDs for VMs
   command: /usr/bin/genisoimage -o "/var/lib/libvirt/images/cloud-init-{{ item.key }}.iso" -V cidata -r -J meta-data user-data
   args:
-    chdir: "/tmp/{{ item.key }}" 
+    chdir: "/tmp/{{ item.key }}"
     creates: "/var/lib/libvirt/images/cloud-init-{{ item.key }}.iso"
   with_dict: "{{ virtual_machines }}"
 
