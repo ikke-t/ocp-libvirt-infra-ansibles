@@ -61,15 +61,14 @@
 
 
 - name: All done, ready to rock
-  hosts: localhost
+  hosts: "{{host_name}}"
   tags: debug
-  gather_facts: false
+  gather_facts: true
   vars_files:
-    - vars/vault.yml
     - vars/main.yml
   tasks:
     - name: All done, you can now login
       debug:
         msg:
           - "Login to Openshift:"
-#          - "oc login -u admin https://master.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io:8443"
+          - "oc login -u admin https://master.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io:8443"

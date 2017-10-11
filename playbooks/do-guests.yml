@@ -83,15 +83,15 @@
     - ocp_node
 
 - name: Infra is done, ready to install OCP
-  hosts: localhost
+  hosts: {{bastion_name}}
   vars_files:
     - vars/vault.yml
     - vars/main.yml
-  gather_facts: false
+  gather_facts: true
   tasks:
   - name: Now install OCP, you must login to {{bastion_name}} to run OCP ansible installer
     debug:
       msg:
       - "SSH to {{bastion_name}} to run ansible installer:"
-      - "ssh -F /tmp/ocp-bastion-ssh.config -A {{virtual_machines[ 'bastion' ].address}}""
+      - "ssh -F /tmp/ocp-bastion-ssh.config -A {{virtual_machines[ bastion_name ].address}}""
       - "ansible-playbook /usr/share/ansible/openshift-ansible/playbooks/byo/config.yml"
