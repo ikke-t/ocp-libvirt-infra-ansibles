@@ -70,3 +70,4 @@ rh_sub_pool: "{{ vault_rh_sub_pool }}"
 
 guest_default_pw: "{{ vault_guest_default_pw }}"
 guest_authorized_key: "{{ vault_guest_authorized_key }}"
+ocp_admin_pw: "{{ vault_ocp_admin_pw }}"

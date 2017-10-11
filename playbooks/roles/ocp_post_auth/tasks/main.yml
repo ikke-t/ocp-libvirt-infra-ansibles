@@ -1,0 +1,20 @@
+---
+
+- name: check if admin passwd set
+  lineinfile:
+    dest: /etc/origin/master/htpasswd
+    regexp: "^admin:"
+    line: "admin"
+    state: present
+  check_mode: yes
+  register: admin_present
+  ignore_errors: yes
+  failed_when: (admin_present | changed) or (admin_present | failed)
+
+- name: Add admin user and password
+  command: "htpasswd -b /etc/origin/master/htpasswd admin {{ ocp_admin_pw }}"
+  when: admin_present|failed
+# XXX does not work, it set's the password every time
+
+- name: Set admin privileges
+  command: "/usr/local/bin/oc adm policy add-cluster-role-to-user cluster-admin admin"
