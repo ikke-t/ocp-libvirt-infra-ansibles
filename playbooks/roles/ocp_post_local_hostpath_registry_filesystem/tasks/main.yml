@@ -1,0 +1,29 @@
+---
+
+- name: Ensure filesystem for registry disk
+  filesystem:
+    fstype: xfs
+    dev: /dev/vdc
+
+- name: Ensure mount point for registry
+  file:
+    path: /var/hostpath/registry
+    state: directory
+    owner: nfsnobody
+    group: nfsnobody
+    mode: 0777
+
+- name: Fix SELinux type for registry dir
+  file:
+    setype: svirt_sandbox_file_t
+    path: /var/hostpath/registry
+    recurse: yes
+    state: directory
+
+- name: Ensure registry disk to mounted and in fstab
+  mount:
+    path: /var/hostpath/registry
+    src: /dev/vdc
+    fstype: xfs
+    opts: defaults
+    state: mounted

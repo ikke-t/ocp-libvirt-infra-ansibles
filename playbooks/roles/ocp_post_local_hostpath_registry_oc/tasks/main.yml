@@ -1,0 +1,6 @@
+---
+
+- name: Add scc for hostaccess
+  command: "/usr/local/bin/oc adm policy add-scc-to-user hostaccess -z registry"
+- name: Add volume to regisry dc
+  command: "/usr/local/bin/oc volume dc/docker-registry --add -t hostPath --path /var/hostpath/registry -m /registry --name registry-storage --overwrite"
