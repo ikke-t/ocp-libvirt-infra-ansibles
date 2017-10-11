@@ -42,6 +42,8 @@ virtual_machines:
     root_disk_size: 20g
     secondary_disk_name: ocp-infra-b
     secondary_disk_size: 60g
+    registry_disk_name: ocpregistry # don't put dash here!
+    registry_disk_size: 100G
     memory: 16
     cpus: 4
     address: 192.168.122.20

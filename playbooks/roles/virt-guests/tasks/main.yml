@@ -77,10 +77,17 @@
     state: running
   with_dict: "{{ virtual_machines }}"
 
-- name: add VM guests to inventory
-  add_host:
-    hostname: "{{ item.key }}"
-    ansible_ssh_host: "{{ item.value.address }}"
-    ansible_ssh_common_args: -o ProxyCommand="ssh -W %h:%p -q {{host_user}}@{{host_name}}" -o StrictHostKeyChecking=false -o UserKnownHostsFile=/dev/null
-    groups: virtuals
-  with_dict: "{{ virtual_machines }}"
+- name: ensure logical volume for registry disk
+  lvol:
+    vg: "{{ volume_group }}"
+    lv: "{{ virtual_machines[ infra_name ].registry_disk_name }}"
+    size: "{{ virtual_machines[ infra_name ].registry_disk_size }}"
+
+- name: verify if disk already attached
+  shell: virsh domblklist {{ infra_name }}|grep -q vdc.*registry
+  ignore_errors: yes
+  register: registry_disk
+
+- name: Add new disk to {{ infra_name }} as vdc
+  command: virsh attach-disk {{ infra_name }} --source /dev/mapper/vg0-{{ virtual_machines[ infra_name ].registry_disk_name }} --persistent --target vdc
+  when: registry_disk|failed
