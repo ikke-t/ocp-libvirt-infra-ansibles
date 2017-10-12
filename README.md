@@ -9,9 +9,9 @@ I have run this on CentOS7, which is set up with LVM. There is plenty of free sp
 # Usage
 
 1. Do git clone this repo.
-2. Download RHEL KVM image and save it to: ```playbooks/roles/virt-host/files/rhel-7-kvm.qcow2```. You get it here for free: https://access.redhat.com/downloads/content/69/ver=/rhel---7/latest/x86_64/product-software
-3. Create a settings file into: `playbooks/vars/main.yml`. There is example file available: `playbooks/vars/example-main.yml`
-4. Some of the secrets are in `playbooks/vars/vault.yml` file, see example in `playbooks/vars/example-vault.yml`. An example with vault: `ansible-playbook --vault-password-file .vault-password -i hosts <playbook>`
+2. Download RHEL KVM image and save it to: ```roles/virt-host/files/rhel-7-kvm.qcow2```. You get it here for free: https://access.redhat.com/downloads/content/69/ver=/rhel---7/latest/x86_64/product-software
+3. Create a settings file into: `vars/main.yml`. There is example file available: `vars/example-main.yml`
+4. Some of the secrets are in `vars/vault.yml` file, see example in `vars/example-vault.yml`. An example with vault: `ansible-playbook --vault-password-file .vault-password -i hosts <playbook>`
 4. you can add and remove hosts by adding entries into virtual_machines table in the above settings file
 5. run ansible to setup the host with necessary tools: `ansible-playbook -i hosts do-host.yml`
 6. run ansible to setup the guests (see note about rerun): `ansible-playbook -i hosts do-guests.yml`
