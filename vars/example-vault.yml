@@ -5,3 +5,4 @@ vault_rh_sub_pool: 8a85f9843e3d687a013e3ddd46dd07f1
 
 vault_guest_default_pw: your-default-password
 vault_guest_authorized_key: ssh-rsa AAA.....
+vault_ocp_admin_pw: your-ocp-admin-pwd
