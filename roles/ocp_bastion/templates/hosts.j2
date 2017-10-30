@@ -94,7 +94,7 @@ openshift_hosted_registry_replicas=1
 # Registry Storage Options
 
 # Metrics deployment
-openshift_hosted_metrics_deploy=false
+openshift_hosted_metrics_deploy=true
 openshift_hosted_metrics_public_url=https://metrics.apps.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io/hawkular/metrics
 openshift_metrics_hawkular_hostname=metrics.apps.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io
 openshift_metrics_cassandra_replicas=1
