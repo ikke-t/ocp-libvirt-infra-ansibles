@@ -83,7 +83,7 @@
     - ocp_node
 
 - name: Infra is done, ready to install OCP
-  hosts: {{bastion_name}}
+  hosts: "{{bastion_name}}"
   vars_files:
     - vars/vault.yml
     - vars/main.yml
@@ -93,5 +93,5 @@
     debug:
       msg:
       - "SSH to {{bastion_name}} to run ansible installer:"
-      - "ssh -F /tmp/ocp-bastion-ssh.config -A {{virtual_machines[ bastion_name ].address}}""
+      - "ssh -F /tmp/ocp-bastion-ssh.config -A {{virtual_machines[ bastion_name ].address}}"
       - "ansible-playbook /usr/share/ansible/openshift-ansible/playbooks/byo/config.yml"
