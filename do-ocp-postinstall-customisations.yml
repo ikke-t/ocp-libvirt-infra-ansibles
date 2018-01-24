@@ -35,6 +35,7 @@
     - vars/main.yml
   roles:
     - ocp_post_local_hostpath_registry_filesystem
+  #when: pv_source == hostpath
 
 - name: Add hostpath volume to registry
   hosts: "{{ master_name }}"
@@ -44,6 +45,17 @@
     - vars/main.yml
   roles:
     - ocp_post_local_hostpath_registry_oc
+  #when: pv_source == hostpath
+
+- name: Add NFS PVs
+  hosts: "{{ master_name }}"
+  tags: add-registry
+  vars_files:
+    - vars/vault.yml
+    - vars/main.yml
+  roles:
+    - ocp_post_nfs
+  #when: pv_source == nfs
 
 - name: Fix bugs
   tags: bug-fixes

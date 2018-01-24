@@ -17,3 +17,74 @@
     regexp='.*{{ item.key }}$' line="{{ item.value.address }} {{ item.key }}"
     state=present
   with_dict: "{{ virtual_machines }}"
+
+- name: prepare NFS share
+  filesystem:
+    fstype: xfs
+    dev: /dev/vdb
+
+- name: Create exports dir
+  file:
+    path: /srv/nfs
+    state: directory
+
+- name: Mount new disk to mount point
+  mount:
+    path: /srv/nfs
+    src: /dev/vdb
+    fstype: xfs
+    state: mounted
+
+- name: configure nfs ports 111,2049 to iptables
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: "{{item}}"
+    jump: ACCEPT
+    comment: "Accept trafic to {{item}}"
+  with_items:
+  - 111
+  - 2049
+
+- name: ensure reguired package are installed
+  package:
+    name: "{{item}}"
+    state: latest
+  with_items:
+  - nfs-utils
+  - rpcbind
+
+- name: ensure reguired services are running
+  service:
+    name: "{{item}}"
+    state: restarted
+    enabled: yes
+  with_items:
+  - rpcbind
+  - nfs-server
+
+- name: ensure openshift-ansible.exports file present
+  file:
+    path: /etc/exports.d/openshift-ansible.exports
+    state: touch
+
+- name: "Setup NFS exports"
+  lineinfile:
+    dest: /etc/exports.d/openshift-ansible.exports
+    state: present
+    line: "/srv/nfs/pv{{item.name}} *(rw,root_squash,no_wdelay)"
+  with_items:
+  - "{{nfs_pvs}}"
+
+- name: "Create directories"
+  file:
+    path: "/srv/nfs/pv{{item.name}}"
+    state: directory
+    owner: nfsnobody
+    group: nfsnobody
+    mode: 0777
+  with_items:
+  - "{{nfs_pvs}}"
+
+- name: Refresh nfs exports
+  command: exportfs -ra

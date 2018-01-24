@@ -1,0 +1,31 @@
+---
+
+- name: Create dir for PV files
+  file:
+    path: /tmp/pvs-nfs
+    state: directory
+- name: Create PV files
+  copy:
+    dest: /tmp/pvs-nfs/pv{{item.name}}-nfs.yaml
+    content: |
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata:
+        name: pv{{item.name}}-nfs
+      spec:
+        capacity:
+          storage: {{item.gigs}}Gi
+        accessModes:
+          - ReadWriteOnce
+          - ReadWriteMany
+        persistentVolumeReclaimPolicy: Recycle
+        nfs:
+          path: /srv/nfs/pv{{item.name}}
+          server: {{ virtual_machines['bastion'].address }}
+  with_items:
+  - "{{nfs_pvs}}"
+  register: pv_files
+
+- name: Create PVs
+  command: "/usr/bin/oc create -f /tmp/pvs-nfs/"
+  when: pv_files.changed
