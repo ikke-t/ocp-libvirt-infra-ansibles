@@ -50,7 +50,7 @@
   vars_files:
     - vars/vault.yml
     - vars/main.yml
-  hosts: "{{ master_name }}, {{ infra_name }}, {{ apps1_name }}"
+  hosts: "{{ master_name }}, {{ infra_name }}, {{ apps1_name }}, {{ apps2_name }}"
   tasks:
     - name: Fix bug with DNS
       lineinfile:

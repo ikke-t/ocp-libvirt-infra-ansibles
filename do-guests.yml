@@ -74,7 +74,7 @@
     - ocp_bastion
 
 - name: prepare nodes
-  hosts: "{{ master_name }}, {{ infra_name }}, {{ apps1_name }}"
+  hosts: "{{ master_name }}, {{ infra_name }}, {{ apps1_name }}, {{ apps2_name }}"
   vars_files:
     - vars/vault.yml
     - vars/main.yml
