@@ -1,6 +1,6 @@
 # Create an OSEv3 group that contains the masters and nodes groups
 # For highly available load balancer a custom setup is needed, see
-# for example https://github.com/myllynen/openshift-ha-load-balancer
+# for example https://github.com/openshift/openshift-ansible/blob/master/inventory/hosts.example
 [OSEv3:children]
 masters
 nodes
@@ -94,7 +94,7 @@ openshift_hosted_registry_replicas=1
 # Registry Storage Options
 
 # Metrics deployment
-openshift_hosted_metrics_deploy=true
+openshift_metrics_install_metrics=true
 openshift_hosted_metrics_public_url=https://metrics.apps.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io/hawkular/metrics
 openshift_metrics_hawkular_hostname=metrics.apps.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io
 openshift_metrics_cassandra_replicas=1
@@ -108,7 +108,6 @@ openshift_metrics_hawkular_nodeselector={"region":"infra"}
 openshift_metrics_heapster_nodeselector={"region":"infra"}
 
 # Logging deployment
-openshift_hosted_logging_deploy=false
 openshift_logging_install_logging=false
 openshift_logging_kibana_hostname=logging.apps.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io
 openshift_logging_use_ops=false

@@ -17,4 +17,4 @@
 # XXX does not work, it set's the password every time
 
 - name: Set admin privileges
-  command: "/usr/local/bin/oc adm policy add-cluster-role-to-user cluster-admin admin"
+  command: "/usr/bin/oc adm policy add-cluster-role-to-user cluster-admin admin"

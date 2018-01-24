@@ -83,7 +83,7 @@
     - ocp_node
 
 - name: Infra is done, ready to install OCP
-  hosts: "{{bastion_name}}"
+  hosts: "{{ bastion_name }}"
   vars_files:
     - vars/vault.yml
     - vars/main.yml
