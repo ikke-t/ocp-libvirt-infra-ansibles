@@ -8,4 +8,5 @@
       {{ bastion_name }} ansible_ssh_host={{ virtual_machines[ 'bastion' ].address }} remote_user=cloud-user
       {{ master_name }} ansible_ssh_host={{ virtual_machines[ 'ocp-master' ].address }} remote_user=cloud-user
       {{ infra_name }} ansible_ssh_host={{ virtual_machines[ 'ocp-infra' ].address }} remote_user=cloud-user
-      {{ infra_name }} ansible_ssh_host={{ virtual_machines[ 'ocp-apps1' ].address }} remote_user=cloud-user
+      {{ apps1_name }} ansible_ssh_host={{ virtual_machines[ 'ocp-apps1' ].address }} remote_user=cloud-user
+      {{ apps2_name }} ansible_ssh_host={{ virtual_machines[ 'ocp-apps2' ].address }} remote_user=cloud-user
