@@ -130,10 +130,13 @@ openshift_generate_no_proxy_hosts=true
 [etcd]
 {{master_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-master' ].address }}
 
-#[nfs]
-#bastion
+{% if pv_source == 'nfs' %}
+# [nfs]
+# {{ bastion_name }}
+{% endif %}
 
 [nodes]
 {{master_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-master' ].address }} openshift_schedulable=false
 {{infra_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-infra' ].address }} openshift_node_labels="{'region':'infra'}"
-{{apps1_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-apps1' ].address }} openshift_node_labels="{'purpose':'work'}"
+{{apps1_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-apps1' ].address }} openshift_node_labels="{'purpose':'work','zone':'a'}"
+{{apps2_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-apps2' ].address }} openshift_node_labels="{'purpose':'work', 'zone':'b'}"

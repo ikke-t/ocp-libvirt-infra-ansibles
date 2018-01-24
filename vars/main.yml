@@ -12,6 +12,7 @@ bastion_name: bastion
 master_name: ocp-master
 infra_name: ocp-infra
 apps1_name: ocp-apps1
+apps2_name: ocp-apps2
 
 # on consecutive runs it's faster to disable RH subscriptions
 do_subscribe: true
@@ -57,9 +58,20 @@ virtual_machines:
     root_disk_size: 20g
     secondary_disk_name: ocp-apps1-b
     secondary_disk_size: 60g
-    memory: 16
+    memory: 32
     cpus: 4
     address: 192.168.122.30
+    network: 192.168.122.0
+    broadcast: 192.168.122.255
+    gateway: 192.168.122.1
+  ocp-apps2:
+    root_disk_name: ocp-apps2-a
+    root_disk_size: 20g
+    secondary_disk_name: ocp-apps2-b
+    secondary_disk_size: 60g
+    memory: 32
+    cpus: 4
+    address: 192.168.122.40
     network: 192.168.122.0
     broadcast: 192.168.122.255
     gateway: 192.168.122.1
