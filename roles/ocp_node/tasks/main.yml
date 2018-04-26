@@ -3,7 +3,7 @@
 - name: install packages for OCP install
   package: name={{ item }} state=present
   with_items:
-    - docker
+    - docker-1.13.1
     - container-selinux
     - atomic-openshift-docker-excluder
     - wget
@@ -17,6 +17,7 @@
     - sos
     - psacct
     - NetworkManager
+    - cri-o
 
 - name: Build hosts file
   lineinfile:
@@ -29,7 +30,7 @@
   service: name=NetworkManager state=started enabled=true
 
 - name: Detect Docker storage configuration status
-  command: grep -q /dev/mapper/docker /etc/sysconfig/docker-storage
+  command: grep -q overlay2 /etc/sysconfig/docker-storage
   register: docker_storage_test
   changed_when: false
   failed_when: false
@@ -47,6 +48,7 @@
       CONTAINER_ROOT_LV_NAME=dockerlv
       CONTAINER_ROOT_LV_MOUNT_PATH=/var/lib/docker
       VG=ocp
+      WIPE_SIGNATURES=true
   when: docker_storage_test.rc != 0
 
 - name: Apply Docker storage configuration changes
