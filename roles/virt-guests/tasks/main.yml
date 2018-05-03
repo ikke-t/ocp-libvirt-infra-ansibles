@@ -27,15 +27,6 @@
     mode: '0600'
   with_dict: "{{ virtual_machines }}"
 
-- name: create network-config files
-  template:
-    src: network-config.j2
-    dest: "/tmp/{{ item.key }}/network-config"
-    owner: root
-    group: root
-    mode: '0600'
-  with_dict: "{{ virtual_machines }}"
-
 - name: create cloud-init CDs for VMs
   command: /usr/bin/genisoimage -o "/var/lib/libvirt/images/cloud-init-{{ item.key }}.iso" -V cidata -r -J meta-data user-data
   args:
@@ -90,4 +81,4 @@
 
 - name: Add new disk to {{ infra_name }} as vdc
   command: virsh attach-disk {{ infra_name }} --source /dev/mapper/vg0-{{ virtual_machines[ infra_name ].registry_disk_name }} --persistent --target vdc
-  when: registry_disk|failed
+  when: registry_disk is failed
