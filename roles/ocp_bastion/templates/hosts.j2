@@ -97,7 +97,7 @@ openshift_hosted_registry_replicas=1
 # Registry Storage Options
 
 # Deploy Prometheus
-openshift_hosted_prometheus_deploy=false
+openshift_hosted_prometheus_deploy=true
 openshift_prometheus_namespace=openshift-metrics
 openshift_prometheus_node_selector={"region":"infra"}
 openshift_prometheus_storage_kind=nfs
@@ -125,7 +125,7 @@ openshift_metrics_heapster_nodeselector={"region":"infra"}
 openshift_logging_install_logging=false
 openshift_logging_kibana_hostname=logging.apps.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io
 openshift_logging_use_ops=false
-openshift_logging_master_url=master01
+openshift_logging_master_url={{ master_name }}
 openshift_logging_public_master_url=master.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io
 openshift_logging_curator_default_days=7
 openshift_logging_kibana_hostname=logging.apps.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io
@@ -147,7 +147,7 @@ template_service_broker_install=true
 # Setup storage for etcd2, for the new Service Broker
 openshift_hosted_etcd_storage_kind=nfs
 openshift_hosted_etcd_storage_nfs_options="*(rw,root_squash,sync,no_wdelay)"
-openshift_hosted_etcd_storage_host={{ bastion_name }}
+openshift_hosted_etcd_storage_host={{ master_name }}
 openshift_hosted_etcd_storage_nfs_directory=/exports
 openshift_hosted_etcd_storage_volume_name=etcd-vol2
 openshift_hosted_etcd_storage_access_modes=["ReadWriteOnce"]
