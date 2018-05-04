@@ -22,7 +22,7 @@ virtual_machines:
     root_disk_name: bastion-a
     root_disk_size: 10g
     secondary_disk_name: bastion-b
-    secondary_disk_size: 120g
+    secondary_disk_size: 10g
     memory: 8
     cpus: 2
     address: 192.168.122.2
@@ -31,7 +31,7 @@ virtual_machines:
     gateway: 192.168.122.1
   ocp-master:
     root_disk_name: ocp-master-a
-    root_disk_size: 30g
+    root_disk_size: 120g
     secondary_disk_name: ocp-master-b
     secondary_disk_size: 20g
     memory: 8

@@ -5,7 +5,7 @@
 masters
 nodes
 etcd
-#nfs
+nfs
 
 # Set variables common for all OSEv3 hosts
 [OSEv3:vars]
@@ -163,8 +163,8 @@ openshift_generate_no_proxy_hosts=true
 {{master_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-master' ].address }}
 
 {% if pv_source == 'nfs' %}
-# [nfs]
-# {{ bastion_name }}
+[nfs]
+{{ master_name }}
 {% endif %}
 
 [nodes]
