@@ -17,7 +17,7 @@ deployment_type=openshift-enterprise
 containerized=false
 
 # Skip env validation
-openshift_disable_check=disk_availability,memory_availability
+openshift_disable_check=disk_availability,memory_availability,docker_storage,docker_storage_driver,docker_image_availability
 
 # Configure usage of openshift_clock role.
 openshift_clock_enabled=true
@@ -29,8 +29,11 @@ openshift_rolling_restart_mode=system
 osm_use_cockpit=true
 osm_cockpit_plugins=['cockpit-kubernetes', 'cockpit-pcp', 'setroubleshoot-server']
 
+# Enable CRI-O
+openshift_use_crio=true
+
 # Docker / Registry Configuration
-openshift_docker_disable_push_dockerhub=True
+#openshift_docker_disable_push_dockerhub=True
 openshift_docker_options="--log-driver=journald --log-level=warn --ipv6=false"
 openshift_docker_insecure_registries=docker-registry.default.svc,docker-registry.default.svc.cluster.local
 
@@ -93,6 +96,17 @@ openshift_hosted_registry_replicas=1
 
 # Registry Storage Options
 
+# Deploy Prometheus
+openshift_hosted_prometheus_deploy=false
+openshift_prometheus_namespace=openshift-metrics
+openshift_prometheus_node_selector={"region":"infra"}
+openshift_prometheus_storage_kind=nfs
+openshift_prometheus_alertmanager_storage_kind=nfs
+openshift_prometheus_alertbuffer_storage_kind=nfs
+openshift_prometheus_storage_type=pvc
+openshift_prometheus_alertmanager_storage_type=pvc
+openshift_prometheus_alertbuffer_storage_type=pvc
+
 # Metrics deployment
 openshift_metrics_install_metrics=true
 openshift_hosted_metrics_public_url=https://metrics.apps.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io/hawkular/metrics
@@ -130,6 +144,16 @@ openshift_enable_service_catalog=true
 # Enable template service broker (requires service catalog to be enabled, above)
 template_service_broker_install=true
 
+# Setup storage for etcd2, for the new Service Broker
+openshift_hosted_etcd_storage_kind=nfs
+openshift_hosted_etcd_storage_nfs_options="*(rw,root_squash,sync,no_wdelay)"
+openshift_hosted_etcd_storage_host={{ bastion_name }}
+openshift_hosted_etcd_storage_nfs_directory=/exports
+openshift_hosted_etcd_storage_volume_name=etcd-vol2
+openshift_hosted_etcd_storage_access_modes=["ReadWriteOnce"]
+openshift_hosted_etcd_storage_volume_size=1G
+openshift_hosted_etcd_storage_labels={'storage': 'etcd'}
+
 openshift_generate_no_proxy_hosts=true
 
 [masters]
@@ -144,7 +168,7 @@ openshift_generate_no_proxy_hosts=true
 {% endif %}
 
 [nodes]
-{{master_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-master' ].address }} openshift_schedulable=false
-{{infra_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-infra' ].address }} openshift_node_labels="{'region':'infra'}"
-{{apps1_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-apps1' ].address }} openshift_node_labels="{'purpose':'work','zone':'a'}"
-{{apps2_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-apps2' ].address }} openshift_node_labels="{'purpose':'work', 'zone':'b'}"
+{{master_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-master' ].address }} openshift_node_labels="{'region': 'master', 'zone': 'default'}"
+{{infra_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-infra' ].address }} openshift_node_labels="{'region':'infra', 'zone':'default', 'runtime':'cri-o'}"
+{{apps1_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-apps1' ].address }} openshift_node_labels="{'purpose':'work', 'zone':'default', 'zone':'a', 'runtime':'cri-o'}"
+{{apps2_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-apps2' ].address }} openshift_node_labels="{'purpose':'work', 'zone':'default', 'zone':'b', 'runtime':'cri-o'}"

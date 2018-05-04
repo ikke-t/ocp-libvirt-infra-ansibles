@@ -53,8 +53,6 @@
     content: |
       STORAGE_DRIVER=overlay2
       DEVS=/dev/vdb
-      CONTAINER_ROOT_LV_NAME=dockerlv
-      CONTAINER_ROOT_LV_MOUNT_PATH=/var/lib/docker
       VG=ocp
       WIPE_SIGNATURES=true
   when: docker_storage_test.rc != 0

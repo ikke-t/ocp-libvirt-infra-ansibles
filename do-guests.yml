@@ -59,6 +59,7 @@
           - rhel-7-server-extras-rpms
           - "rhel-7-server-ose-{{ ocp_version }}-rpms"
           - rhel-7-fast-datapath-rpms
+          - rhel-7-server-ansible-2.4-rpms
       when: do_subscribe
 
 - name: prepare OCP bastion
@@ -94,4 +95,6 @@
       msg:
       - "SSH to {{bastion_name}} to run ansible installer:"
       - "ssh -F /tmp/ocp-bastion-ssh.config -A {{virtual_machines[ bastion_name ].address}}"
-      - "ansible-playbook /usr/share/ansible/openshift-ansible/playbooks/byo/config.yml"
+      - "ansible-playbook /usr/share/ansible/openshift-ansible/playbooks/prerequisites.yml"
+      - "ansible-playbook /usr/share/ansible/openshift-ansible/playbooks/deploy_cluster.yml"
+      - "Good luck!"
