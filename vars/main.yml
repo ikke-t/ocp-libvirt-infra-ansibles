@@ -31,7 +31,7 @@ virtual_machines:
     gateway: 192.168.122.1
   ocp-master:
     root_disk_name: ocp-master-a
-    root_disk_size: 20g
+    root_disk_size: 30g
     secondary_disk_name: ocp-master-b
     secondary_disk_size: 20g
     memory: 8
@@ -42,7 +42,7 @@ virtual_machines:
     gateway: 192.168.122.1
   ocp-infra:
     root_disk_name: ocp-infra-a
-    root_disk_size: 20g
+    root_disk_size: 30g
     secondary_disk_name: ocp-infra-b
     secondary_disk_size: 60g
     registry_disk_name: ocpregistry # don't put dash here!
@@ -55,7 +55,7 @@ virtual_machines:
     gateway: 192.168.122.1
   ocp-apps1:
     root_disk_name: ocp-apps1-a
-    root_disk_size: 20g
+    root_disk_size: 30g
     secondary_disk_name: ocp-apps1-b
     secondary_disk_size: 60g
     memory: 32
@@ -66,7 +66,7 @@ virtual_machines:
     gateway: 192.168.122.1
   ocp-apps2:
     root_disk_name: ocp-apps2-a
-    root_disk_size: 20g
+    root_disk_size: 30g
     secondary_disk_name: ocp-apps2-b
     secondary_disk_size: 60g
     memory: 32
