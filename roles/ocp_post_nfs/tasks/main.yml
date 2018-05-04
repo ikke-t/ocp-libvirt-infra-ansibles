@@ -21,7 +21,7 @@
         persistentVolumeReclaimPolicy: Recycle
         nfs:
           path: /srv/nfs/pv{{item.name}}
-          server: {{ virtual_machines['bastion'].address }}
+          server: {{ virtual_machines['ocp-master'].address }}
   with_items:
   - "{{nfs_pvs}}"
   register: pv_files
