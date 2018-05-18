@@ -45,7 +45,32 @@
     - vars/main.yml
   roles:
     - ocp_post_local_hostpath_registry_oc
-  #when: pv_source == hostpath
+
+- name: Setup NFS exports
+  hosts: "{{master_name}}"
+  tags: add-nfs
+  vars_files:
+    - vars/vault.yml
+    - vars/main.yml
+  tasks:
+    - name: generate export lines into nfs config
+      lineinfile:
+        dest: /etc/exports.d/openshift-ansible.exports
+        state: present
+        line: "/srv/nfs/pv{{item.name}} *(rw,root_squash,no_wdelay)"
+      with_items:
+        - "{{nfs_pvs}}"
+    - name: Create directories
+      file:
+        path: "/srv/nfs/pv{{item.name}}"
+        state: directory
+        owner: nfsnobody
+        group: nfsnobody
+        mode: 0777
+      with_items:
+      - "{{nfs_pvs}}"
+    - name: Refresh nfs exports
+      command: exportfs -ra
 
 - name: Add NFS PVs
   hosts: "{{ master_name }}"
@@ -55,7 +80,6 @@
     - vars/main.yml
   roles:
     - ocp_post_nfs
-  #when: pv_source == nfs
 
 - name: Fix bugs
   tags: bug-fixes
