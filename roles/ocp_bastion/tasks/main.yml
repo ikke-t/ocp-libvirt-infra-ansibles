@@ -5,6 +5,8 @@
   with_items:
     - ansible-2.6.6
     - openshift-ansible
+    - vim
+    - tmux
 
 - name: Create Inventory file
   template:
