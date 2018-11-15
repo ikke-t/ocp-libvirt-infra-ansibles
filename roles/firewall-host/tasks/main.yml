@@ -116,6 +116,7 @@
   iptables:
     chain: FORWARD
     action: insert
+    rule_num: 2
     ctstate: NEW,RELATED,ESTABLISHED
     out_interface: virbr0
     destination: 192.168.122.0/24
