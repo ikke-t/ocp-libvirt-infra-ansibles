@@ -4,9 +4,10 @@ Host {{ host_name }}
   ProxyCommand               none
   CheckHostIP                no
   ForwardAgent               yes
+  Port                       {{ host_ssh_port }}
 
 Host *
-  ProxyCommand               ssh {{ host_user }}@{{ host_name }} -W %h:%p
+  ProxyCommand               ssh {{ host_user }}@{{ host_name }} -p {{ host_ssh_port }} -W %h:%p
   StrictHostKeyChecking      no
   ForwardAgent               yes
   CheckHostIP                no

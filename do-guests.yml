@@ -20,7 +20,7 @@
       add_host:
         hostname: "{{ item.key }}"
         ansible_ssh_host: "{{ item.value.address }}"
-        ansible_ssh_common_args: -o ProxyCommand="ssh -W %h:%p -q {{host_user}}@{{host_name}}" -o StrictHostKeyChecking=false -o UserKnownHostsFile=/dev/null
+        ansible_ssh_common_args: -o ProxyCommand="ssh -W %h:%p -q {{host_user}}@{{host_name}} -p {{ host_ssh_port }}" -o StrictHostKeyChecking=false -o UserKnownHostsFile=/dev/null
         ansible_user: cloud-user
         ansible_become: true
         groups: virtuals

@@ -7,6 +7,7 @@ volume_group: vg0
 
 host_name: isanta.pilivi.fi
 host_user: root
+host_ssh_port: 2200
 host_become: false
 bastion_name: bastion
 master_name: ocp-master
