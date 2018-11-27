@@ -6,7 +6,7 @@
 - name: install packages for OCP install
   package: name={{ item }} state=present
   with_items:
-    - docker-1.13.1
+    #- docker-1.13.1
     - container-selinux
     - atomic-openshift-docker-excluder
     - wget
@@ -32,40 +32,53 @@
 - name: start NetworkManager
   service: name=NetworkManager state=started enabled=true
 
-- name: Detect Docker storage configuration status
-  command: grep -q overlay2 /etc/sysconfig/docker-storage
-  register: docker_storage_test
-  changed_when: false
-  failed_when: false
+- name: Set cap on journald logs so they don't fill disks
+  lineinfile:
+    path: /etc/systemd/journald.conf
+    regexp: 'SystemMaxUse='
+    line: 'SystemMaxUse=1G'
+  register: journal_result
+
+- name: kick journald if needed
+  service:
+    name: systemd-journald
+    state: restarted
+  when: journal_result.changed
+
+# - name: Detect Docker storage configuration status
+#   command: grep -q overlay2 /etc/sysconfig/docker-storage
+#   register: docker_storage_test
+#   changed_when: false
+#   failed_when: false
 
 # We need some extra wiping, see
 # htttps://bugzilla.redhat.com/show_bug.cgi?id=1572266
 
 - name: Wipe possible ghost PV from docker disk
-  command: "pvremove -fy /dev/vdb1"
+  command: "pvremove --force --force -y {{ ocs_disk }}"
   ignore_errors: yes
-  when: docker_storage_test.rc != 0
+  # when: docker_storage_test.rc != 0
 
 - name: Wipe the beginning of the disk from docker disk
-  command: "dd if=/dev/zero of=/dev/vdb bs=1M count=4"
-  when: docker_storage_test.rc != 0
+  command: "dd if=/dev/zero of={{ ocs_disk }} bs=1M count=4"
+  # when: docker_storage_test.rc != 0
 
-- name: Create Docker storage configuration
-  copy:
-    dest: /etc/sysconfig/docker-storage-setup
-    content: |
-      STORAGE_DRIVER=overlay2
-      DEVS=/dev/vdb
-      VG=ocp
-      WIPE_SIGNATURES=true
-  when: docker_storage_test.rc != 0
+# - name: Create Docker storage configuration
+#   copy:
+#     dest: /etc/sysconfig/docker-storage-setup
+#     content: |
+#       STORAGE_DRIVER=overlay2
+#       DEVS=/dev/vdb
+#       VG=ocp
+#       WIPE_SIGNATURES=true
+#   when: docker_storage_test.rc != 0
 
-- name: Apply Docker storage configuration changes
-  command: systemctl start docker-storage-setup
-  when: docker_storage_test.rc != 0
+# - name: Apply Docker storage configuration changes
+#   command: systemctl start docker-storage-setup
+#   when: docker_storage_test.rc != 0
 
-- name: Enable docker
-  command: systemctl enable docker
-
-- name: Start docker
-  command: systemctl start docker
+# - name: Enable docker
+#   command: systemctl enable docker
+#
+# - name: Start docker
+#   command: systemctl start docker

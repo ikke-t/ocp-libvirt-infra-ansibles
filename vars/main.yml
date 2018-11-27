@@ -1,6 +1,6 @@
 ---
 
-ocp_version: 3.9
+ocp_version: 3.11
 
 rhel_image: rhel-7-kvm.qcow2
 volume_group: vg0
@@ -32,11 +32,11 @@ virtual_machines:
     gateway: 192.168.122.1
   ocp-master:
     root_disk_name: ocp-master-a
-    root_disk_size: 120g
+    root_disk_size: 40g
     secondary_disk_name: ocp-master-b
-    secondary_disk_size: 20g
-    memory: 8
-    cpus: 2
+    secondary_disk_size: 60g
+    memory: 16
+    cpus: 4
     address: 192.168.122.10
     network: 192.168.122.0
     broadcast: 192.168.122.255
@@ -47,7 +47,7 @@ virtual_machines:
     secondary_disk_name: ocp-infra-b
     secondary_disk_size: 60g
     registry_disk_name: ocpregistry # don't put dash here!
-    registry_disk_size: 100G
+    registry_disk_size: 20G
     memory: 16
     cpus: 4
     address: 192.168.122.20
@@ -81,12 +81,18 @@ rh_sub_user: "{{ vault_rh_sub_user }}"
 rh_sub_password: "{{ vault_rh_sub_password }}"
 rh_sub_pool: "{{ vault_rh_sub_pool }}"
 
+rh_oreg_user: "{{vault_rh_oreg_user}}"
+rh_oreg_token: "{{vault_rh_oreg_token}}"
+
 guest_default_pw: "{{ vault_guest_default_pw }}"
 guest_authorized_key: "{{ vault_guest_authorized_key }}"
 ocp_admin_pw: "{{ vault_ocp_admin_pw }}"
 
 # use NFS or hostpath for PV source?
-pv_source: nfs
+# pv_source: nfs
+pv_source: cns
+ocs_disk: vdb
+
 nfs_pvs: #80G
 - { name: '00', gigs: '1' }
 - { name: '01', gigs: '1' }

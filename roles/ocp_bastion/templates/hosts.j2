@@ -5,7 +5,13 @@
 masters
 nodes
 etcd
+{% if pv_source == 'nfs' %}
 nfs
+{% endif %}
+{% if pv_source == 'cns' %}
+glusterfs
+{% endif %}
+
 
 # Set variables common for all OSEv3 hosts
 [OSEv3:vars]
@@ -15,6 +21,9 @@ ansible_become=true
 # https://github.com/openshift/openshift-ansible/blob/master/DEPLOYMENT_TYPES.md
 deployment_type=openshift-enterprise
 containerized=false
+oreg_url=registry.redhat.io/openshift3/ose-${component}:${version}
+oreg_auth_user={{rh_oreg_user}}
+oreg_auth_password={{rh_oreg_token}}
 
 # Skip env validation
 openshift_disable_check=disk_availability,memory_availability,docker_storage,docker_storage_driver,docker_image_availability
@@ -31,16 +40,19 @@ osm_cockpit_plugins=['cockpit-kubernetes', 'cockpit-pcp', 'setroubleshoot-server
 
 # Enable CRI-O
 openshift_use_crio=true
+openshift_use_crio_only=true
 
 # Docker / Registry Configuration
-#openshift_docker_disable_push_dockerhub=True
+openshift_docker_disable_push_dockerhub=True
 openshift_docker_options="--log-driver=journald --log-level=warn --ipv6=false"
 openshift_docker_insecure_registries=docker-registry.default.svc,docker-registry.default.svc.cluster.local
 
 # Native high availability cluster method with optional load balancer.
-#openshift_master_cluster_method=native
+openshift_master_cluster_method=native
 openshift_master_cluster_hostname={{ master_name }}
 openshift_master_cluster_public_hostname=master.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io
+openshift_master_api_port=8443
+openshift_master_console_port=8443
 
 
 # Configure nodeIP in the node config
@@ -59,14 +71,14 @@ openshift_portal_net=172.30.0.0/16
 osm_host_subnet_length=8
 
 # htpasswd auth
-openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]
+openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider' }]
 
 # LDAP auth
 #openshift_master_identity_providers=[{'name': 'my_ldap_provider', 'challenge': 'true', 'login': 'true', 'kind': 'LDAPPasswordIdentityProvider', 'attributes': {'id': ['dn'], 'email': ['mail'], 'name': ['cn'], 'preferredUsername': ['uid']}, 'bindDN': '', 'bindPassword': '', 'ca': 'my-ldap-ca.crt', 'insecure': 'false', 'url': 'ldap://ldap.example.com:389/ou=users,dc=example,dc=com?uid'}]
 #openshift_master_ldap_ca_file=<path to local ca file to use>
 
 # Enable API service auditing, available as of 3.2
-openshift_master_audit_config={"enabled": true}
+# openshift_master_audit_config={"enabled": true}
 
 # Provide local certificate paths which will be deployed to masters
 #openshift_master_named_certificates=[{"certfile": "/path/to/custom1.crt", "keyfile": "/path/to/custom1.key", "cafile": "/path/to/custom-ca1.crt"}]
@@ -85,58 +97,66 @@ openshift_node_kubelet_args={'image-gc-high-threshold': ['90'], 'image-gc-low-th
 openshift_master_default_subdomain=apps.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io
 
 # default project node selector
-osm_default_node_selector='purpose=work'
+# osm_default_node_selector='purpose=work'
 
 # OpenShift Router Options
-openshift_hosted_router_selector='region=infra'
+# openshift_hosted_router_selector='region=infra'
 
 # Openshift Registry Options
-openshift_hosted_registry_selector='region=infra'
+openshift_hosted_registry_storage_kind=glusterfs
 openshift_hosted_registry_replicas=1
 
-# Registry Storage Options
+#OCS
+openshift_storage_glusterfs_namespace=ocs
+openshift_storage_glusterfs_name=ocs
+openshift_storage_glusterfs_wipe=True
+openshift_storage_glusterfs_storageclass=true
+openshift_storage_glusterfs_storageclass_default=true
+openshift_storage_glusterfs_image=registry.access.redhat.com/rhgs3/rhgs-server-rhel7
+openshift_storage_glusterfs_heketi_image=registry.access.redhat.com/rhgs3/rhgs-volmanager-rhel7
+openshift_storage_glusterfs_block_deploy=True
+openshift_storage_glusterfs_block_host_vol_create=true
+openshift_storage_glusterfs_block_host_vol_size=50
+openshift_storage_glusterfs_block_storageclass=true
 
 # Deploy Prometheus
-openshift_hosted_prometheus_deploy=true
+openshift_cluster_monitoring_operator_install=true
+openshift_cluster_monitoring_operator_prometheus_storage_enabled=true
+openshift_cluster_monitoring_operator_alertmanager_storage_enabled=true
+openshift_cluster_monitoring_operator_prometheus_storage_capacity=5Gi
+openshift_cluster_monitoring_operator_node_selector={"node-role.kubernetes.io/infra":"true"}
 openshift_prometheus_namespace=openshift-metrics
-openshift_prometheus_node_selector={"region":"infra"}
+{% if pv_source == 'nfs' %}
 openshift_prometheus_storage_kind=nfs
 openshift_prometheus_alertmanager_storage_kind=nfs
 openshift_prometheus_alertbuffer_storage_kind=nfs
+{% endif %}
 openshift_prometheus_storage_type=pvc
 openshift_prometheus_alertmanager_storage_type=pvc
 openshift_prometheus_alertbuffer_storage_type=pvc
 
 # Metrics deployment
-openshift_metrics_install_metrics=true
-openshift_hosted_metrics_public_url=https://metrics.apps.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io/hawkular/metrics
-openshift_metrics_hawkular_hostname=metrics.apps.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io
-openshift_metrics_cassandra_replicas=1
-openshift_metrics_cassandra_limits_memory=2Gi
-openshift_metrics_hawkular_replicas=1
-openshift_metrics_duration=5
-openshift_metrics_cassandra_storage_type=emptydir
-
-openshift_metrics_cassandra_nodeselector={"region":"infra"}
-openshift_metrics_hawkular_nodeselector={"region":"infra"}
-openshift_metrics_heapster_nodeselector={"region":"infra"}
+openshift_metrics_install_metrics=false
+# openshift_metrics_hawkular_hostname=metrics.apps.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io
+# openshift_metrics_cassandra_replicas=1
+# openshift_metrics_cassandra_limits_memory=2Gi
+# openshift_metrics_hawkular_replicas=1
+# openshift_metrics_duration=5
+# openshift_metrics_cassandra_pvc_size=5Gi
+# openshift_metrics_cassandra_storage_type=dynamic
+# openshift_metrics_cassandra_pvc_storage_class_name=glusterfs-ocs-block
 
 # Logging deployment
-openshift_logging_install_logging=false
+openshift_logging_install_logging=true
 openshift_logging_kibana_hostname=logging.apps.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io
 openshift_logging_use_ops=false
-openshift_logging_master_url={{ master_name }}
-openshift_logging_public_master_url=master.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io
+openshift_logging_public_master_url=https://master.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io:8443
 openshift_logging_curator_default_days=7
-openshift_logging_kibana_hostname=logging.apps.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io
-
-openshift_logging_curator_nodeselector={"region":"infra"}
-openshift_logging_es_nodeselector={"region":"infra"}
-openshift_logging_fluentd_nodeselector={"fluentd":"true"}
-openshift_logging_kibana_nodeselector={"region":"infra"}
-
-# Prometheus
-#openshift_hosted_prometheus_deploy=true
+openshift_logging_es_pvc_size=10Gi
+openshift_logging_es_pvc_dynamic=true
+openshift_logging_es_pvc_storage_class_name=glusterfs-ocs-block
+openshift_logging_es_memory_limit=8Gi
+openshift_logging_es_nodeselector={"node-role.kubernetes.io/infra":"true"}
 
 # Enable service catalog
 openshift_enable_service_catalog=true
@@ -145,14 +165,21 @@ openshift_enable_service_catalog=true
 template_service_broker_install=true
 
 # Setup storage for etcd2, for the new Service Broker
-openshift_hosted_etcd_storage_kind=nfs
-openshift_hosted_etcd_storage_nfs_options="*(rw,root_squash,sync,no_wdelay)"
-openshift_hosted_etcd_storage_host={{ master_name }}
-openshift_hosted_etcd_storage_nfs_directory=/exports
-openshift_hosted_etcd_storage_volume_name=etcd-vol2
-openshift_hosted_etcd_storage_access_modes=["ReadWriteOnce"]
-openshift_hosted_etcd_storage_volume_size=1G
-openshift_hosted_etcd_storage_labels={'storage': 'etcd'}
+# openshift_hosted_etcd_storage_kind=nfs
+# openshift_hosted_etcd_storage_nfs_options="*(rw,root_squash,sync,no_wdelay)"
+# openshift_hosted_etcd_storage_host={{ master_name }}
+# openshift_hosted_etcd_storage_nfs_directory=/exports
+# openshift_hosted_etcd_storage_volume_name=etcd-vol2
+# openshift_hosted_etcd_storage_access_modes=["ReadWriteOnce"]
+# openshift_hosted_etcd_storage_volume_size=1G
+# openshift_hosted_etcd_storage_labels={'storage': 'etcd'}
+
+
+# Grafana
+openshift_grafana_storage_type=pvc
+openshift_grafana_sc_name=glusterfs-ocs
+openshift_grafana_storage_volume_size=1Gi
+openshift_grafana_node_selector={"node-role.kubernetes.io/infra":"true"}
 
 openshift_generate_no_proxy_hosts=true
 
@@ -167,8 +194,17 @@ openshift_generate_no_proxy_hosts=true
 {{ master_name }}
 {% endif %}
 
+{% if pv_source == 'cns' %}
+[glusterfs]
+{{master_name}} glusterfs_ip={{ virtual_machines[ 'ocp-master' ].address }} glusterfs_devices='["/dev/{{ocs_disk}}"]'
+{{infra_name}}  glusterfs_ip={{ virtual_machines[ 'ocp-infra' ].address }}  glusterfs_devices='["/dev/{{ocs_disk}}"]'
+{{apps1_name}}  glusterfs_ip={{ virtual_machines[ 'ocp-apps1' ].address }}  glusterfs_devices='["/dev/{{ocs_disk}}"]'
+{{apps2_name}}  glusterfs_ip={{ virtual_machines[ 'ocp-apps2' ].address }}  glusterfs_devices='["/dev/{{ocs_disk}}"]'
+{% endif %}
+
+
 [nodes]
-{{master_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-master' ].address }} openshift_node_labels="{'region': 'master', 'zone': 'default'}"
-{{infra_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-infra' ].address }} openshift_node_labels="{'region':'infra', 'zone':'default', 'runtime':'cri-o'}"
-{{apps1_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-apps1' ].address }} openshift_node_labels="{'purpose':'work', 'zone':'default', 'zone':'a', 'runtime':'cri-o'}"
-{{apps2_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-apps2' ].address }} openshift_node_labels="{'purpose':'work', 'zone':'default', 'zone':'b', 'runtime':'cri-o'}"
+{{master_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-master' ].address }} openshift_node_group_name=node-config-master
+{{infra_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-infra' ].address }} openshift_node_group_name='node-config-infra'
+{{apps1_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-apps1' ].address }} openshift_node_group_name='node-config-compute'
+{{apps2_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-apps2' ].address }} openshift_node_group_name='node-config-compute'

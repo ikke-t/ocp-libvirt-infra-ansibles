@@ -24,11 +24,13 @@
   filesystem:
     fstype: xfs
     dev: /dev/vdb
+  when: pv_source == 'nfs'
 
 - name: Create exports dir
   file:
     path: /srv/nfs
     state: directory
+  when: pv_source == 'nfs'
 
 - name: Mount new disk to mount point
   mount:
@@ -36,6 +38,7 @@
     src: /dev/vdb
     fstype: xfs
     state: mounted
+  when: pv_source == 'nfs'
 
 - name: configure nfs ports 111,2049 to iptables
   iptables:
@@ -55,6 +58,7 @@
   with_items:
   - nfs-utils
   - rpcbind
+  when: pv_source == 'nfs'
 
 - name: ensure reguired services are running
   service:
@@ -64,11 +68,13 @@
   with_items:
   - rpcbind
   - nfs-server
+  when: pv_source == 'nfs'
 
 - name: ensure openshift-ansible.exports file present
   file:
     path: /etc/exports.d/openshift-ansible.exports
     state: touch
+  when: pv_source == 'nfs'
 
 - name: "Setup NFS exports"
   lineinfile:
@@ -77,6 +83,7 @@
     line: "/srv/nfs/pv{{item.name}} *(rw,root_squash,no_wdelay)"
   with_items:
   - "{{nfs_pvs}}"
+  when: pv_source == 'nfs'
 
 - name: "Create directories"
   file:
@@ -87,6 +94,8 @@
     mode: 0777
   with_items:
   - "{{nfs_pvs}}"
+  when: pv_source == 'nfs'
 
 - name: Refresh nfs exports
   command: exportfs -ra
+  when: pv_source == 'nfs'

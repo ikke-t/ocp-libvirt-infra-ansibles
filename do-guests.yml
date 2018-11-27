@@ -58,8 +58,7 @@
           - rhel-7-server-optional-rpms
           - rhel-7-server-extras-rpms
           - "rhel-7-server-ose-{{ ocp_version }}-rpms"
-          - rhel-7-fast-datapath-rpms
-          - rhel-7-server-ansible-2.4-rpms
+          - rhel-7-server-ansible-2.6-rpms
       when: do_subscribe
 
 - name: prepare OCP bastion
