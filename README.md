@@ -19,9 +19,6 @@ I have run this on CentOS7, which is set up with LVM. There is plenty of free sp
 
 Note about re-running do-guests.yml: It will always rewrite the guest disks with plain RHEL7 image. In case you want to rerun it without overwriting guest disks, do: `ansible-playbook -i hosts do-guests.yml --skip-tags qemu_root_disks`
 
-~~There is a dirty trick done to get networking right, I'll try to make it nicer. Please PR if you know how to get cloud-init to set static addresses so that routes and name resolution work too. See https://bugzilla.redhat.com/show_bug.cgi?id=1489415~~
-
-
 
 BR,
 ikke
