@@ -26,9 +26,9 @@
         groups: virtuals
       with_dict: "{{ virtual_machines }}"
       tags: vms_to_inventory
-    - name: wait 300 seconds, but only start checking after 30 seconds
+    - name: wait 300 seconds, but only start checking after 45 seconds
       wait_for_connection:
-        delay: 30
+        delay: 45
         timeout: 300
 
 - name: create access config for guests
