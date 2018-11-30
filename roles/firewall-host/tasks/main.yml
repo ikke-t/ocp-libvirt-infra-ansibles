@@ -5,7 +5,6 @@
   iptables:
     table: nat
     chain: PREROUTING
-    in_interface: brinet
     protocol: tcp
     match: tcp
     destination_port: 80
@@ -30,7 +29,6 @@
   iptables:
     table: nat
     chain: PREROUTING
-    in_interface: brinet
     protocol: tcp
     match: tcp
     destination_port: 443
@@ -55,7 +53,6 @@
   iptables:
     table: nat
     chain: PREROUTING
-    in_interface: brinet
     protocol: tcp
     match: tcp
     destination_port: 8443
@@ -98,7 +95,7 @@
     jump: DNAT
     to_destination: "{{ virtual_machines['bastion'].address }}:22"
     #to_ports: 22 XXX ansible bug?
-    comment: Redirect 222 ssh traffic to bastion
+    comment: Redirect 2222 ssh traffic to bastion
 
 - name: create ssh MASQUERADE for bastion
   tags: fw-host
