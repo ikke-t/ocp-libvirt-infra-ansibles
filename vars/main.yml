@@ -28,7 +28,7 @@ virtual_machines:
     cpus: 2
     address: 192.168.122.2
     network: 192.168.122.0
-    broadcast: 192.168.122.255
+    netmask: 24
     gateway: 192.168.122.1
   ocp-master:
     root_disk_name: ocp-master-a
@@ -39,7 +39,7 @@ virtual_machines:
     cpus: 4
     address: 192.168.122.10
     network: 192.168.122.0
-    broadcast: 192.168.122.255
+    netmask: 24
     gateway: 192.168.122.1
   ocp-infra:
     root_disk_name: ocp-infra-a
@@ -52,7 +52,7 @@ virtual_machines:
     cpus: 4
     address: 192.168.122.20
     network: 192.168.122.0
-    broadcast: 192.168.122.255
+    netmask: 24
     gateway: 192.168.122.1
   ocp-apps1:
     root_disk_name: ocp-apps1-a
@@ -63,7 +63,7 @@ virtual_machines:
     cpus: 4
     address: 192.168.122.30
     network: 192.168.122.0
-    broadcast: 192.168.122.255
+    netmask: 24
     gateway: 192.168.122.1
   ocp-apps2:
     root_disk_name: ocp-apps2-a
@@ -74,7 +74,7 @@ virtual_machines:
     cpus: 4
     address: 192.168.122.40
     network: 192.168.122.0
-    broadcast: 192.168.122.255
+    netmask: 24
     gateway: 192.168.122.1
 
 rh_sub_user: "{{ vault_rh_sub_user }}"

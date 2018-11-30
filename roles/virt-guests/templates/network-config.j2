@@ -1,0 +1,9 @@
+version: 2
+ethernets:
+   eth0:
+    addresses:
+     - {{ item.value.address }}/{{ item.value.netmask }}
+    gateway4: {{ item.value.gateway }}
+    nameservers:
+      search: [localdomain]
+      addresses: [{{ item.value.gateway }}, 8.8.8.8]

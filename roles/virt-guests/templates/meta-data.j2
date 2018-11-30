@@ -2,13 +2,3 @@ instance-id: "{{ item.key }}"
 local-hostname: "{{ item.key }}"
 public-keys:
   - "{{ guest_authorized_key }}"
-
-network-interfaces: |
-  iface eth0 inet static
-  address "{{ item.value.address }}"
-  network "{{ item.value.address }}"
-  netmask 255.255.255.0
-  broadcast "{{ item.value.broadcast }}"
-  gateway "{{ item.value.gateway }}"
-  dns-nameservers 8.8.8.8
-  dns-search localdomain
