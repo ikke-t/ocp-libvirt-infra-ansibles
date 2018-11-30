@@ -34,17 +34,27 @@
     force: yes
   with_dict: "{{ virtual_machines }}"
 
-- name: delete logical volumes for virtual docker disks
+- name: delete logical volumes for virtual container disks
   lvol:
     vg: "{{ volume_group }}"
-    lv: "{{ item.value.secondary_disk_name }}"
+    lv: "{{ item.value.second_disk_name }}"
     state: absent
     force: yes
   with_dict: "{{ virtual_machines }}"
+  when: item.value.second_disk_name is defined
 
-- name: delete logical volume for registry
+- name: delete logical volumes for gluster disks
   lvol:
     vg: "{{ volume_group }}"
-    lv: "{{ virtual_machines[ infra_name ].registry_disk_name }}"
+    lv: "{{ item.value.third_disk_name }}"
     state: absent
     force: yes
+  with_dict: "{{ virtual_machines }}"
+  when: item.value.third_disk_name is defined
+
+# - name: delete logical volume for registry
+#   lvol:
+#     vg: "{{ volume_group }}"
+#     lv: "{{ virtual_machines[ infra_name ].registry_disk_name }}"
+#     state: absent
+#     force: yes

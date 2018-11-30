@@ -45,6 +45,32 @@
     state: restarted
   when: journal_result.changed
 
+- name: add container storage mount point
+  file:
+    path: /var/lib/containers
+    state: directory
+
+- name: create filesystem for containers
+  filesystem:
+    fstype: xfs
+    dev: "/dev/{{ container_disk }}"
+
+- name: add container storage mount point
+  mount:
+    path: /var/lib/containers
+    src: "/dev/{{ container_disk }}"
+    fstype: xfs
+    state: mounted
+
+# - name: move docker dir into /var/lib/containers/docker
+#   file:
+#     path: /var/lib/containers/docker
+#     state: directory
+# - file:
+#     path: /var/lib/docker
+#     src: /var/lib/containers/docker
+#     state: link
+#
 # - name: Detect Docker storage configuration status
 #   command: grep -q overlay2 /etc/sysconfig/docker-storage
 #   register: docker_storage_test
@@ -54,14 +80,14 @@
 # We need some extra wiping, see
 # htttps://bugzilla.redhat.com/show_bug.cgi?id=1572266
 
-- name: Wipe possible ghost PV from docker disk
-  command: "pvremove --force --force -y {{ ocs_disk }}"
+- name: Wipe possible ghost PV from gluster disk
+  command: "pvremove --force --force -y /dev/{{ ocs_disk }}"
   ignore_errors: yes
-  # when: docker_storage_test.rc != 0
+#  when: docker_storage_test.rc != 0
 
 - name: Wipe the beginning of the disk from docker disk
   command: "dd if=/dev/zero of={{ ocs_disk }} bs=1M count=4"
-  # when: docker_storage_test.rc != 0
+#  when: docker_storage_test.rc != 0
 
 # - name: Create Docker storage configuration
 #   copy:
@@ -71,7 +97,7 @@
 #       DEVS=/dev/vdb
 #       VG=ocp
 #       WIPE_SIGNATURES=true
-#   when: docker_storage_test.rc != 0
+#  when: docker_storage_test.rc != 0
 
 # - name: Apply Docker storage configuration changes
 #   command: systemctl start docker-storage-setup
@@ -79,6 +105,6 @@
 
 # - name: Enable docker
 #   command: systemctl enable docker
-#
+
 # - name: Start docker
 #   command: systemctl start docker

@@ -33,12 +33,22 @@
       <target dev='vda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x08' function='0x0'/>
     </disk>
+{% if item.value.second_disk_name is defined %}
     <disk type='block' device='disk'>
       <driver name='qemu' type='raw' cache='none' io='native'/>
-      <source dev="/dev/vg0/{{ item.value.secondary_disk_name }}"/>
+      <source dev="/dev/vg0/{{ item.value.second_disk_name }}"/>
       <target dev='vdb' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x09' function='0x0'/>
     </disk>
+{% endif %}
+{% if item.value.third_disk_name is defined %}
+    <disk type='block' device='disk'>
+      <driver name='qemu' type='raw' cache='none' io='native'/>
+      <source dev="/dev/vg0/{{ item.value.third_disk_name }}"/>
+      <target dev='vdc' bus='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x0a' function='0x0'/>
+    </disk>
+{% endif %}
     <disk type='file' device='cdrom'>
       <driver name='qemu' type='raw'/>
       <source file='/var/lib/libvirt/images/cloud-init-{{ item.key }}.iso'/>

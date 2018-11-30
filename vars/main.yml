@@ -22,8 +22,8 @@ virtual_machines:
   bastion:
     root_disk_name: bastion-a
     root_disk_size: 10g
-    secondary_disk_name: bastion-b
-    secondary_disk_size: 10g
+#    second_disk_name: bastion-b
+#    second_disk_size: 10g
     memory: 8
     cpus: 2
     address: 192.168.122.2
@@ -33,8 +33,10 @@ virtual_machines:
   ocp-master:
     root_disk_name: ocp-master-a
     root_disk_size: 40g
-    secondary_disk_name: ocp-master-b
-    secondary_disk_size: 60g
+    second_disk_name: ocp-master-b
+    second_disk_size: 60g
+    third_disk_name: ocp-master-c
+    third_disk_size: 60g
     memory: 16
     cpus: 4
     address: 192.168.122.10
@@ -44,10 +46,12 @@ virtual_machines:
   ocp-infra:
     root_disk_name: ocp-infra-a
     root_disk_size: 30g
-    secondary_disk_name: ocp-infra-b
-    secondary_disk_size: 60g
-    registry_disk_name: ocpregistry # don't put dash here!
-    registry_disk_size: 20G
+    second_disk_name: ocp-infra-b
+    second_disk_size: 60g
+    third_disk_name: ocp-infra-c
+    third_disk_size: 60g
+    # registry_disk_name: ocpregistry # don't put dash here!
+    # registry_disk_size: 20G
     memory: 16
     cpus: 4
     address: 192.168.122.20
@@ -57,8 +61,10 @@ virtual_machines:
   ocp-apps1:
     root_disk_name: ocp-apps1-a
     root_disk_size: 30g
-    secondary_disk_name: ocp-apps1-b
-    secondary_disk_size: 60g
+    second_disk_name: ocp-apps1-b
+    second_disk_size: 60g
+    third_disk_name: ocp-apps1-c
+    third_disk_size: 60g
     memory: 32
     cpus: 4
     address: 192.168.122.30
@@ -68,8 +74,10 @@ virtual_machines:
   ocp-apps2:
     root_disk_name: ocp-apps2-a
     root_disk_size: 30g
-    secondary_disk_name: ocp-apps2-b
-    secondary_disk_size: 60g
+    second_disk_name: ocp-apps2-b
+    second_disk_size: 60g
+    third_disk_name: ocp-apps2-c
+    third_disk_size: 60g
     memory: 32
     cpus: 4
     address: 192.168.122.40
@@ -91,7 +99,8 @@ ocp_admin_pw: "{{ vault_ocp_admin_pw }}"
 # use NFS or hostpath for PV source?
 # pv_source: nfs
 pv_source: cns
-ocs_disk: vdb
+container_disk: vdb
+ocs_disk: vdc
 
 nfs_pvs: #80G
 - { name: '00', gigs: '1' }

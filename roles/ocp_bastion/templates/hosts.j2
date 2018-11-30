@@ -39,8 +39,9 @@ osm_use_cockpit=true
 osm_cockpit_plugins=['cockpit-kubernetes', 'cockpit-pcp', 'setroubleshoot-server']
 
 # Enable CRI-O
-openshift_use_crio=true
-openshift_use_crio_only=true
+openshift_use_crio=True
+openshift_use_crio_only=False
+openshift_crio_enable_docker_gc=True
 
 # Docker / Registry Configuration
 openshift_docker_disable_push_dockerhub=True
