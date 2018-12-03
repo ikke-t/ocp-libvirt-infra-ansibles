@@ -62,21 +62,6 @@
     fstype: xfs
     state: mounted
 
-# - name: move docker dir into /var/lib/containers/docker
-#   file:
-#     path: /var/lib/containers/docker
-#     state: directory
-# - file:
-#     path: /var/lib/docker
-#     src: /var/lib/containers/docker
-#     state: link
-#
-# - name: Detect Docker storage configuration status
-#   command: grep -q overlay2 /etc/sysconfig/docker-storage
-#   register: docker_storage_test
-#   changed_when: false
-#   failed_when: false
-
 # We need some extra wiping, see
 # htttps://bugzilla.redhat.com/show_bug.cgi?id=1572266
 
@@ -88,23 +73,3 @@
 - name: Wipe the beginning of the disk from docker disk
   command: "dd if=/dev/zero of={{ ocs_disk }} bs=1M count=4"
 #  when: docker_storage_test.rc != 0
-
-# - name: Create Docker storage configuration
-#   copy:
-#     dest: /etc/sysconfig/docker-storage-setup
-#     content: |
-#       STORAGE_DRIVER=overlay2
-#       DEVS=/dev/vdb
-#       VG=ocp
-#       WIPE_SIGNATURES=true
-#  when: docker_storage_test.rc != 0
-
-# - name: Apply Docker storage configuration changes
-#   command: systemctl start docker-storage-setup
-#   when: docker_storage_test.rc != 0
-
-# - name: Enable docker
-#   command: systemctl enable docker
-
-# - name: Start docker
-#   command: systemctl start docker

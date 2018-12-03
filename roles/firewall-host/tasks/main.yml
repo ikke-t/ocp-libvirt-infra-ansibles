@@ -72,16 +72,6 @@
     destination: "{{ virtual_machines['ocp-master'].address }}"
     comment: Masquerade https traffic from master
 
-# - name: mark ssh connections
-#   XXX Ansible does not have recent iptables module
-#   command: iptables -I INPUT -p tcp --dport 22 -i eth0 -m state --state NEW -m recent --set
-#   iptables:
-#     chain: INPUT
-#     protocol: tcp
-#     destination_port: 22
-#     in_interface: brinet
-#     ctstate: NEW
-
 - name: create SSH nat for bastion
   tags: fw-host
   iptables:
@@ -119,15 +109,3 @@
     destination: 192.168.122.0/24
     jump: ACCEPT
     comment: Allow all DNAT FORWARD to guest network
-
-
-# - name: slow down brute force ssh attacks
-#   tags: fw-host
-#   iptables:
-#     chain: INPUT
-#     protocol: tcp
-#     destination_port: 22
-#     ctstate: NEW
-#     in_interface: brinet
-#     limit: 2/minute
-#     jump: DROP

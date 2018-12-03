@@ -86,17 +86,21 @@
     state: running
   with_dict: "{{ virtual_machines }}"
 
-# - name: ensure logical volume for registry disk
-#   lvol:
-#     vg: "{{ volume_group }}"
-#     lv: "{{ virtual_machines[ infra_name ].registry_disk_name }}"
-#     size: "{{ virtual_machines[ infra_name ].registry_disk_size }}"
-#
-# - name: verify if disk already attached
-#   shell: virsh domblklist {{ infra_name }}|grep -q vdc.*registry
-#   ignore_errors: yes
-#   register: registry_disk
-#
-# - name: Add new disk to {{ infra_name }} as vdc
-#   command: virsh attach-disk {{ infra_name }} --source /dev/mapper/vg0-{{ virtual_machines[ infra_name ].registry_disk_name }} --persistent --target vdc
-#   when: registry_disk is failed
+- name: ensure logical volume for registry disk
+  lvol:
+    vg: "{{ volume_group }}"
+    lv: "{{ virtual_machines[ infra_name ].registry_disk_name }}"
+    size: "{{ virtual_machines[ infra_name ].registry_disk_size }}"
+  when: virtual_machines[ infra_name ].registry_disk_name is defined
+
+- name: verify if disk already attached
+  shell: virsh domblklist {{ infra_name }}|grep -q vdc.*registry
+  ignore_errors: yes
+  register: registry_disk
+  when: virtual_machines[ infra_name ].registry_disk_name is defined
+
+- name: Add new disk to {{ infra_name }} as vdc
+  command: virsh attach-disk {{ infra_name }} --source /dev/mapper/vg0-{{ virtual_machines[ infra_name ].registry_disk_name }} --persistent --target vdc
+  when:
+    - registry_disk is failed
+    - virtual_machines[ infra_name ].registry_disk_name is defined

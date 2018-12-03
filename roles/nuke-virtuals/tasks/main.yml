@@ -52,9 +52,10 @@
   with_dict: "{{ virtual_machines }}"
   when: item.value.third_disk_name is defined
 
-# - name: delete logical volume for registry
-#   lvol:
-#     vg: "{{ volume_group }}"
-#     lv: "{{ virtual_machines[ infra_name ].registry_disk_name }}"
-#     state: absent
-#     force: yes
+- name: delete logical volume for registry
+  lvol:
+    vg: "{{ volume_group }}"
+    lv: "{{ virtual_machines[ infra_name ].registry_disk_name }}"
+    state: absent
+    force: yes
+  when: item.value.registry_disk_name is defined
