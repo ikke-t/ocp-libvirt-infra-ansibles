@@ -25,7 +25,7 @@
       - cockpit-machines
       - certbot
       - python2-certbot-dns-route53
-  yum: name={{ pkgs }} state=present
+  package: name={{ pkgs }} state=present
 
 - name: enable virtualization service
   service:

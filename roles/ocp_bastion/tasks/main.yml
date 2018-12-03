@@ -1,12 +1,13 @@
 ---
 
 - name: install packages for OCP install
-  package: name={{ item }} state=present
-  with_items:
-    - ansible-2.6.6
-    - openshift-ansible
-    - vim
-    - tmux
+  vars:
+    pkgs:
+      - ansible-2.6.6
+      - openshift-ansible
+      - vim
+      - tmux
+  package: name={{ pkgs }} state=present
 
 - name: Create Inventory file
   template:
@@ -52,12 +53,13 @@
   - 2049
 
 - name: ensure reguired package are installed
+  vars:
+    pkgs:
+      - nfs-utils
+      - rpcbind
   package:
-    name: "{{item}}"
+    name: "{{pkgs}}"
     state: latest
-  with_items:
-  - nfs-utils
-  - rpcbind
   when: pv_source == 'nfs'
 
 - name: ensure reguired services are running

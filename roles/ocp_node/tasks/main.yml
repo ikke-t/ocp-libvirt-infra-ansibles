@@ -4,23 +4,23 @@
   package: name=* state=latest
 
 - name: install packages for OCP install
-  package: name={{ item }} state=present
-  with_items:
-    #- docker-1.13.1
-    - container-selinux
-    - atomic-openshift-docker-excluder
-    - wget
-    - git
-    - net-tools
-    - bind-utils
-    - iptables-services
-    - bridge-utils
-    - bash-completion
-    - kexec-tools
-    - sos
-    - psacct
-    - NetworkManager
-    - cri-o
+  vars:
+    pkgs:
+      - container-selinux
+      - atomic-openshift-docker-excluder
+      - wget
+      - git
+      - net-tools
+      - bind-utils
+      - iptables-services
+      - bridge-utils
+      - bash-completion
+      - kexec-tools
+      - sos
+      - psacct
+      - NetworkManager
+      - cri-o
+  package: name={{ pkgs }} state=present
 
 - name: Build hosts file
   lineinfile:
