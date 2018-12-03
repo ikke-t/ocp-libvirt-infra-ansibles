@@ -1,18 +1,31 @@
 ---
 
 - name: install virtualization tools
-  package: name={{ item }} state=present
-  with_items:
-    - bridge-utils
-    - qemu-kvm
-    - qemu-img
-    - libvirt
-    - libvirt-python
-    - libvirt-client
-    - virt-install
-    - libguestfs-tools
-    - libguestfs-bash-completion
-    - genisoimage
+  vars:
+    pkgs:
+      - bridge-utils
+      - qemu-kvm
+      - qemu-img
+      - libvirt
+      - libvirt-python
+      - libvirt-client
+      - virt-install
+      - libguestfs-tools
+      - libguestfs-bash-completion
+      - genisoimage
+      - cockpit
+      - cockpit-dashboard
+      - cockpit-bridge
+      - cockpit-packagekit
+      - cockpit-pcp
+      - cockpit-kubernetes
+      - cockpit-storaged
+      - cockpit-ws
+      - cockpit-system
+      - cockpit-machines
+      - certbot
+      - python2-certbot-dns-route53
+  yum: name={{ pkgs }} state=present
 
 - name: enable virtualization service
   service:
@@ -34,3 +47,41 @@
     generate_ssh_key: yes
     ssh_key_bits: 2048
     ssh_key_file: .ssh/id_rsa
+
+- name: Lets encrypt cockpit
+  block:
+
+    - file:
+        path: /root/.aws
+        state: directory
+        mode: 0600
+
+    - copy:
+        dest: /root/.aws/config
+        mode: 0600
+        content: |
+          [default]
+          aws_access_key_id={{aws_access_key_id}}
+          aws_secret_access_key={{aws_secret_access_key_id}}
+
+    - command: certbot certonly --dns-route53 -d "{{ cockpit_fqdn }}"
+      args:
+        creates: "{{ /etc/letsencrypt/live/{{ cockpit_fqdn }}/fullchain.pem }}"
+      register: certbot_create
+
+    - command:  "cat /etc/letsencrypt/live/{{ cockpit_fqdn }}/fullchain.pem /etc/letsencrypt/live/{{ cockpit_fqdn }}/privkey.pem >> /etc/cockpit/ws-certs.d/1-{{ cockpit_fqdn }}.cert"
+      when: certbot_create.changed
+
+    - cron:
+        name: "renew certbot certs"
+        minute: "20"
+        hour: "02"
+        weekday: "2"
+        job: "certbot renew &> /dev/null && cat /etc/letsencrypt/live/{{ cockpit_fqdn }}/fullchain.pem /etc/letsencrypt/live/{{ cockpit_fqdn }}/privkey.pem >> /etc/cockpit/ws-certs.d/1-{{ cockpit_fqdn }}.cert"
+
+  when:
+    - aws_access_key_id is defined
+    - aws_secret_access_key_id is defined
+
+- name: enable cockpit
+  service: name=cockpit.socket state=started enabled=true
