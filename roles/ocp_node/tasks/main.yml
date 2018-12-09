@@ -66,10 +66,12 @@
 # htttps://bugzilla.redhat.com/show_bug.cgi?id=1572266
 
 - name: Wipe possible ghost PV from gluster disk
+  tags: wipe_pvs 
   command: "pvremove --force --force -y /dev/{{ ocs_disk }}"
   ignore_errors: yes
 #  when: docker_storage_test.rc != 0
 
 - name: Wipe the beginning of the disk from docker disk
+  tags: wipe_pvs 
   command: "dd if=/dev/zero of={{ ocs_disk }} bs=1M count=4"
 #  when: docker_storage_test.rc != 0
