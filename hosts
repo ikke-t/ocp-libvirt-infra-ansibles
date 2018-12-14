@@ -1,1 +1,1 @@
-isanta.pilivi.fi ansible_user=root ansible_become=true ansible_ssh_port=2200
+isanta.konttikoulu.fi ansible_user=root ansible_become=true ansible_ssh_port=2200
