@@ -5,7 +5,7 @@ ocp_version: 3.11
 rhel_image: rhel-7-kvm.qcow2
 volume_group: vg0
 
-host_name: isanta.pilivi.fi
+host_name: isanta.konttikoulu.fi
 host_user: root
 host_ssh_port: 2200
 host_become: false
