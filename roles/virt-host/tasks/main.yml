@@ -34,6 +34,7 @@
     enabled: yes
 
 - name: ensure rhel template exists
+  tags: push_rhel_template
   copy:
     src: "{{ rhel_image }}"
     dest: "/var/lib/libvirt/images/{{ rhel_image }}"
