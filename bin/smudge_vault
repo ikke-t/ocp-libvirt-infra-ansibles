@@ -1,0 +1,23 @@
+#!/bin/sh
+
+if [ ! -r '.vault-password' ]; then
+  exit 1
+fi
+
+tmp=`mktemp`
+cat > $tmp
+
+export PAGER='cat'
+# CONTENT=`ansible-vault view "$tmp" --vault-password-file=.vault-password 2> /dev/null`
+CONTENT=`ansible-vault view "$tmp" 2> /dev/null`
+SUCCESS=$?
+
+if [ $SUCCESS != 0 ]; then
+  (>&2 echo "Looks like one file was commited clear text") 
+  (>&2 echo "Please fix this before continuing !")
+  exit 1
+else
+  echo "$CONTENT"
+fi
+
+rm $tmp

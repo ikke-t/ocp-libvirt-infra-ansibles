@@ -1,0 +1,16 @@
+#!/bin/sh
+
+if [ ! -r '.vault-password' ]; then
+  exit 1
+fi
+
+export PAGER=cat
+#CONTENT=`ansible-vault view "$1" --vault-password-file=.vault-password 2> /dev/null`
+CONTENT=`ansible-vault view "$1" 2> /dev/null`
+SUCCESS=$?
+
+if [ $SUCCESS != 0 ]; then
+  cat "$1"
+else
+  echo "$CONTENT"
+fi
