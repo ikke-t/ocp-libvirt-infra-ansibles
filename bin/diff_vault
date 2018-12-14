@@ -5,8 +5,10 @@ if [ ! -r '.vault-password' ]; then
 fi
 
 export PAGER=cat
-#CONTENT=`ansible-vault view "$1" --vault-password-file=.vault-password 2> /dev/null`
-CONTENT=`ansible-vault view "$1" 2> /dev/null`
+
+# add vault password here if not set in ansible.cfg
+CONTENT=`ansible-vault view "$1" --vault-password-file=.vault-password 2> /dev/null`
+# CONTENT=`ansible-vault view "$1" 2> /dev/null`
 SUCCESS=$?
 
 if [ $SUCCESS != 0 ]; then

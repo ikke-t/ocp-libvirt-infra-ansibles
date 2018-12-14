@@ -7,8 +7,9 @@ fi
 tmp=`mktemp`
 cat > $tmp
 
-# ansible-vault encrypt $tmp --vault-id=.vault-password > /dev/null 2>&1
-ansible-vault encrypt $tmp > /dev/null 2>&1
+# add vault password here if not set in ansible.cfg
+ansible-vault encrypt $tmp --vault-password-file=.vault-password > /dev/null 2>&1
+#ansible-vault encrypt $tmp > /dev/null 2>&1
 
 cat $tmp
 rm $tmp
