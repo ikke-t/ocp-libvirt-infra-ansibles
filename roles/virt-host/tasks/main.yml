@@ -78,7 +78,7 @@
         minute: "20"
         hour: "02"
         weekday: "2"
-        job: "certbot renew &> /dev/null && cat /etc/letsencrypt/live/{{ cockpit_fqdn }}/fullchain.pem /etc/letsencrypt/live/{{ cockpit_fqdn }}/privkey.pem >> /etc/cockpit/ws-certs.d/1-{{ cockpit_fqdn }}.cert"
+        job: "certbot renew &> /dev/null && cat /etc/letsencrypt/live/{{ cockpit_fqdn }}/fullchain.pem /etc/letsencrypt/live/{{ cockpit_fqdn }}/privkey.pem > /etc/cockpit/ws-certs.d/1-{{ cockpit_fqdn }}.cert"
 
   when:
     - aws_access_key_id is defined
