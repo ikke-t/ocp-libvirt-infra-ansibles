@@ -53,6 +53,7 @@
   when: item.value.third_disk_name is defined
 
 - name: delete logical volume for registry
+  ignore_errors: yes
   lvol:
     vg: "{{ volume_group }}"
     lv: "{{ virtual_machines[ infra_name ].registry_disk_name }}"
