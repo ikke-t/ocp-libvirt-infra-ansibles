@@ -9,16 +9,11 @@
     autosubscribe: false
     username: "{{ rh_sub_user }}"
     password: "{{ rh_sub_password }}"
-    pool: "{{ rh_sub_pool }}"
+    pool_ids: ["{{ rh_sub_pool }}"]
   register: subscribe
 
-- name: Disable all the channels
-  shell: |
-    subscription-manager repos --disable='*'
-  when: subscribe.changed
-
 - name: Enable given repos
-  shell: |
-    subscription-manager repos --enable="{{ item }}"
+  rhsm_repository:
+    name: "{{ enabled_repos }}"
+    state: enabled
   with_items: "{{ enabled_repos }}"
-  when: subscribe.changed
