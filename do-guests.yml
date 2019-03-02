@@ -10,7 +10,7 @@
     - virt-guests
     - firewall-host
 
-- name: add VM guests to inventory and wait for being up
+- name: add VM guests to inventory
   hosts: localhost
   vars_files:
     - vars/vault.yml
@@ -26,9 +26,17 @@
         groups: virtuals
       with_dict: "{{ virtual_machines }}"
       tags: vms_to_inventory
-    - name: wait 300 seconds, but only start checking after 45 seconds
+
+
+- name: Wait VMs to be up
+  hosts: all
+  vars_files:
+    - vars/vault.yml
+    - vars/main.yml
+  gather_facts: false
+  tasks:
+    - name: wait 300 seconds for hosts to become available for ssh
       wait_for_connection:
-        delay: 45
         timeout: 300
 
 - name: create access config for guests
