@@ -26,7 +26,7 @@
 
 - name: Check if let's encrypt is already done on previous runs
   stat:
-    path: "/etc/letsencrypt/live/{{ vault_api_fqdn }}/fullchain.pem"
+    path: "/etc/letsencrypt/live/{{ api_fqdn }}/fullchain.pem"
   register: cert_exists
 
 - name: Lets encrypt cert for ocp
@@ -53,7 +53,7 @@
         -m "{{ letsencrypt_email }}"
         -d "{{ api_fqdn }}" -d "{{apps_fqdn}}" -d "*.{{apps_fqdn}}"
       args:
-        creates: "/etc/letsencrypt/live/{{ vault_api_fqdn }}/fullchain.pem"
+        creates: "/etc/letsencrypt/live/{{ api_fqdn }}/fullchain.pem"
 
     - name: put let's encrypt to renew certs periodicly
       cron:
@@ -80,7 +80,7 @@
 
 - name: Allow installer access to ssl key
   file:
-    path: /etc/letsencrypt/archive/ocp.konttikoulu.fi/privkey1.pem
+    path: "/etc/letsencrypt/archive/{{ api_fqdn }}/privkey1.pem"
     state: file
     mode: 0704
 
