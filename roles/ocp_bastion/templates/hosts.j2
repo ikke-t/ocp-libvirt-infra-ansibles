@@ -51,7 +51,8 @@ openshift_docker_insecure_registries=docker-registry.default.svc,docker-registry
 # Native high availability cluster method with optional load balancer.
 openshift_master_cluster_method=native
 openshift_master_cluster_hostname={{ master_name }}
-openshift_master_cluster_public_hostname=master.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io
+#openshift_master_cluster_public_hostname=master.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io
+openshift_master_cluster_public_hostname={{ api_fqdn }}
 openshift_master_api_port=8443
 openshift_master_console_port=8443
 
@@ -73,22 +74,32 @@ osm_host_subnet_length=8
 
 # htpasswd auth
 openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider' }]
-
+openshift_master_htpasswd_users={'admin': '{{ocp_admin_pw}}'}
 
 # Provide local certificate paths which will be deployed to masters
+# https://docs.openshift.com/container-platform/3.11/install/configuring_inventory_file.html#advanced-install-custom-certificates
 #openshift_master_named_certificates=[{"certfile": "/path/to/custom1.crt", "keyfile": "/path/to/custom1.key", "cafile": "/path/to/custom-ca1.crt"}]
+
+openshift_master_named_certificates=[{"names": ["{{ api_fqdn }}"], "certfile": "/etc/letsencrypt/live/{{ api_fqdn }}/fullchain.pem", "keyfile": "/etc/letsencrypt/live/{{ api_fqdn }}/privkey.pem", "cafile": "/etc/letsencrypt/live/{{ api_fqdn }}/chain.pem"}]
+openshift_hosted_router_certificate={"certfile": "/etc/letsencrypt/live/{{ api_fqdn }}/fullchain.pem", "keyfile": "/etc/letsencrypt/live/{{ api_fqdn }}/privkey.pem", "cafile": "/etc/letsencrypt/live/{{ api_fqdn }}/chain.pem"}
+openshift_hosted_registry_routecertificates={"certfile": "/etc/letsencrypt/live/{{ api_fqdn }}/fullchain.pem", "keyfile": "/etc/letsencrypt/live/{{ api_fqdn }}/privkey.pem", "cafile": "/etc/letsencrypt/live/{{ api_fqdn }}/chain.pem"}
+openshift_hosted_registry_routetermination=reencrypt
+
 openshift_master_overwrite_named_certificates=true
+
 #openshift_hosted_router_certificate={"certfile": "/path/to/router.crt", "keyfile": "/path/to/router.key", "cafile": "/path/to/router-ca.crt"}
+
 
 # Install the openshift examples
 openshift_install_examples=true
 openshift_examples_modify_imagestreams=true
 
 # Configure node kubelet arguments. pods-per-core is valid in OpenShift Origin 1.3 or OpenShift Container Platform 3.3 and later.
-openshift_node_kubelet_args={'image-gc-high-threshold': ['90'], 'image-gc-low-threshold': ['80']}
+#openshift_node_kubelet_args={'image-gc-high-threshold': ['90'], 'image-gc-low-threshold': ['80']}
 
 # default subdomain to use for exposed routes
-openshift_master_default_subdomain=apps.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io
+#openshift_master_default_subdomain=apps.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io
+openshift_master_default_subdomain={{apps_fqdn}}
 
 # Openshift Registry Options
 openshift_hosted_registry_storage_kind=glusterfs
@@ -126,10 +137,12 @@ openshift_prometheus_alertmanager_storage_type=pvc
 openshift_prometheus_alertbuffer_storage_type=pvc
 
 # Logging deployment
-openshift_logging_install_logging=true
-openshift_logging_kibana_hostname=logging.apps.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io
+openshift_logging_install_logging=false
+# openshift_logging_kibana_hostname=logging.apps.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io
+openshift_logging_kibana_hostname=logging.{{apps_fqdn}}
 openshift_logging_use_ops=false
-openshift_logging_public_master_url=https://master.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io:8443
+#openshift_logging_public_master_url=https://master.{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}.nip.io:8443
+openshift_logging_public_master_url=https://{{api_fqdn}}:8443
 openshift_logging_curator_default_days=7
 openshift_logging_es_pvc_size=10Gi
 openshift_logging_es_pvc_dynamic=true

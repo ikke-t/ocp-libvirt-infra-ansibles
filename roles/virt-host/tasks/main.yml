@@ -82,7 +82,7 @@
 
   when:
     - aws_access_key_id is defined
-    - aws_secret_access_key_id is defined
+    - aws_secret_access_key is defined
 
 - name: enable cockpit
   service: name=cockpit.socket state=started enabled=true

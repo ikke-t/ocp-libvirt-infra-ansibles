@@ -7,7 +7,82 @@
       - openshift-ansible
       - vim
       - tmux
+      - https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
   package: name={{ pkgs }} state=present
+
+- name: disable epel by default installations
+  lineinfile:
+    path: /etc/yum.repos.d/epel.repo
+    regexp: '^enabled=1'
+    line: 'enabled=0'
+
+- name: install certbot from epel
+  yum:
+    name:
+      - certbot
+      - python2-certbot-dns-route53
+    enablerepo: epel
+    state: present
+
+- name: Check if let's encrypt is already done on previous runs
+  stat:
+    path: "/etc/letsencrypt/live/{{ vault_api_fqdn }}/fullchain.pem"
+  register: cert_exists
+
+- name: Lets encrypt cert for ocp
+  block:
+
+    - name: create awx secrets
+      file:
+        path: /root/.aws
+        state: directory
+        mode: 0600
+
+    - copy:
+        dest: /root/.aws/config
+        mode: 0600
+        content: |
+          [default]
+          aws_access_key_id={{aws_access_key_id}}
+          aws_secret_access_key={{aws_secret_access_key}}
+
+    - name: get let's encrypt cert
+      command: >
+        certbot certonly --dns-route53 --non-interactive --agree-tos
+        --server https://acme-v02.api.letsencrypt.org/directory
+        -m "{{ letsencrypt_email }}"
+        -d "{{ api_fqdn }}" -d "{{apps_fqdn}}" -d "*.{{apps_fqdn}}"
+      args:
+        creates: "/etc/letsencrypt/live/{{ vault_api_fqdn }}/fullchain.pem"
+
+    - name: put let's encrypt to renew certs periodicly
+      cron:
+        name: "renew certbot certs"
+        minute: "20"
+        hour: "02"
+        weekday: "2"
+        job: "certbot renew &> /dev/null"
+
+  when:
+    # we do let's encrypt if aws keys are provided, and we do it only once
+    - aws_access_key_id is defined
+    - aws_secret_access_key is defined
+    - cert_exists.stat.islnk is not defined
+
+- name: Allow installer access to ssl certs
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0705
+  with_items:
+    - /etc/letsencrypt/live
+    - /etc/letsencrypt/archive
+
+- name: Allow installer access to ssl key
+  file:
+    path: /etc/letsencrypt/archive/ocp.konttikoulu.fi/privkey1.pem
+    state: file
+    mode: 0704
 
 - name: Create Inventory file
   template:
