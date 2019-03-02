@@ -5,6 +5,7 @@
   iptables:
     table: nat
     chain: PREROUTING
+    destination: "{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}"
     protocol: tcp
     match: tcp
     destination_port: 80
@@ -29,6 +30,7 @@
   iptables:
     table: nat
     chain: PREROUTING
+    destination: "{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}"
     protocol: tcp
     match: tcp
     destination_port: 443
@@ -53,6 +55,7 @@
   iptables:
     table: nat
     chain: PREROUTING
+    destination: "{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}"
     protocol: tcp
     match: tcp
     destination_port: 8443
@@ -78,6 +81,7 @@
     table: nat
     chain: PREROUTING
     in_interface: brinet
+    destination: "{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}"
     protocol: tcp
     match: tcp
     destination: 148.251.233.173
