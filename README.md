@@ -4,6 +4,9 @@ This is ansible automation for creating RHEL virtual machines on libvirt host.
 
 Personally I use this to setup demoes for OpenShift. I use this ansible to create OpenShift cluster virtual machines on top of generic libvirt host (RHEL7/CentOS7).
 
+![architecture](https://raw.githubusercontent.com/ikke-t/ocp-libvirt-infra-ansibles/master/architecture.png)
+
+
 I have run this on CentOS7, which is set up with LVM. There is plenty of free space on logical volume group (VG), where I create logical volumes of RHEL KVM image filesystem. This way I can easily manage virtual disks as LVs. All virtual machines get cloud-init CD created and attached before boot. This way some basic settings can be applied for guests, like ssh -key. All that is automated here by ansible.
 
 # Usage
