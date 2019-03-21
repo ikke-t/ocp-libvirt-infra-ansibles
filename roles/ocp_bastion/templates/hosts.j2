@@ -177,6 +177,11 @@ openshift_grafana_node_selector={"node-role.kubernetes.io/infra":"true"}
 
 openshift_generate_no_proxy_hosts=true
 
+# Install Operators
+openshift_additional_registry_credentials=[{'host':'registry.connect.redhat.com','user':'{{rh_oreg_user}}','password':'{{rh_oreg_token}}','test_image':'mongodb/enterprise-operator:0.9.1'}]
+
+
+
 [masters]
 {{master_name}} ansible_ssh_host={{ virtual_machines[ 'ocp-master' ].address }}
 
