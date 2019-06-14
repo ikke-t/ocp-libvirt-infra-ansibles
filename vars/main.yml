@@ -38,7 +38,7 @@ virtual_machines:
     third_disk_name: ocp-master-c
     third_disk_size: 60g
     memory: 16
-    cpus: 4
+    cpus: 6
     address: 192.168.122.10
     network: 192.168.122.0
     netmask: 24
@@ -53,7 +53,7 @@ virtual_machines:
     # registry_disk_name: ocpregistry # don't put dash here!
     # registry_disk_size: 20G
     memory: 16
-    cpus: 4
+    cpus: 6
     address: 192.168.122.20
     network: 192.168.122.0
     netmask: 24
@@ -66,7 +66,7 @@ virtual_machines:
     third_disk_name: ocp-apps1-c
     third_disk_size: 60g
     memory: 32
-    cpus: 4
+    cpus: 6
     address: 192.168.122.30
     network: 192.168.122.0
     netmask: 24
@@ -79,7 +79,7 @@ virtual_machines:
     third_disk_name: ocp-apps2-c
     third_disk_size: 60g
     memory: 32
-    cpus: 4
+    cpus: 6
     address: 192.168.122.40
     network: 192.168.122.0
     netmask: 24
