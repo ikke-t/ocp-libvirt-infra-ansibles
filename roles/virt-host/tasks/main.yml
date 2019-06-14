@@ -49,6 +49,14 @@
     ssh_key_bits: 2048
     ssh_key_file: .ssh/id_rsa
 
+### XXX fix this placement
+#- name: block LVM seeing guest physical volumes
+#  lineinfile:
+#    regexp: 'filter = [ \"a|.*/|\" ]'
+#    line: '        filter = [ "a|.*/|", "r|/dev/vg0/ocp-.*|" ]'
+#    insertafter: 'default value'
+#    path: /etc/lvm/lvm.conf
+
 - name: Lets encrypt cockpit
   block:
 
@@ -63,11 +71,11 @@
         content: |
           [default]
           aws_access_key_id={{aws_access_key_id}}
-          aws_secret_access_key={{aws_secret_access_key_id}}
+          aws_secret_access_key={{aws_secret_access_key}}
 
     - command: certbot certonly --dns-route53 -d "{{ cockpit_fqdn }}"
       args:
-        creates: "{{ /etc/letsencrypt/live/{{ cockpit_fqdn }}/fullchain.pem }}"
+        creates: "/etc/letsencrypt/live/{{ cockpit_fqdn }}/fullchain.pem"
       register: certbot_create
 
     - command:  "cat /etc/letsencrypt/live/{{ cockpit_fqdn }}/fullchain.pem /etc/letsencrypt/live/{{ cockpit_fqdn }}/privkey.pem > /etc/cockpit/ws-certs.d/1-{{ cockpit_fqdn }}.cert"
