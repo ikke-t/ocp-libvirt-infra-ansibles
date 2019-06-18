@@ -84,7 +84,6 @@
     destination: "{{hostvars[ host_name ]['ansible_default_ipv4']['address']}}"
     protocol: tcp
     match: tcp
-    destination: 148.251.233.173
     destination_port: 2222
     jump: DNAT
     to_destination: "{{ virtual_machines['bastion'].address }}:22"
