@@ -1,6 +1,7 @@
 ---
 
 - name: create dirs for userdata
+  tags: cloudinit
   file:
     path: "/tmp/{{ item.key }}"
     state: directory
@@ -10,6 +11,7 @@
   with_dict: "{{ virtual_machines }}"
 
 - name: create user-data files
+  tags: cloudinit
   template:
     src: user-data.j2
     dest: "/tmp/{{item.key}}/user-data"
@@ -19,6 +21,7 @@
   with_dict: "{{ virtual_machines }}"
 
 - name: create meta-data files
+  tags: cloudinit
   template:
     src: meta-data.j2
     dest: "/tmp/{{ item.key }}/meta-data"
@@ -28,6 +31,7 @@
   with_dict: "{{ virtual_machines }}"
 
 - name: create network-config files
+  tags: cloudinit
   template:
     src: network-config.j2
     dest: "/tmp/{{ item.key }}/network-config"
@@ -37,6 +41,7 @@
   with_dict: "{{ virtual_machines }}"
 
 - name: create cloud-init CDs for VMs
+  tags: cloudinit
   command: /usr/bin/genisoimage -o "/var/lib/libvirt/images/cloud-init-{{ item.key }}.iso" -V cidata -r -J meta-data user-data network-config
   args:
     chdir: "/tmp/{{ item.key }}"

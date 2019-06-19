@@ -4,6 +4,7 @@
 #                  rhel-7-server-extras-rpms ]
 
 - name: Subscribe to Red Hat
+  tags: rhn
   redhat_subscription:
     state: present
     autosubscribe: false
@@ -13,6 +14,7 @@
   register: subscribe
 
 - name: Enable given repos
+  tags: rhn
   rhsm_repository:
     name: "{{ enabled_repos }}"
     state: enabled
