@@ -74,7 +74,7 @@ osm_host_subnet_length=8
 
 # htpasswd auth
 openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider' }]
-openshift_master_htpasswd_users={'admin': '{{ocp_admin_pw}}'}
+openshift_master_htpasswd_users={'admin': '{{admin_pw_hash}}'}
 
 # Provide local certificate paths which will be deployed to masters
 # https://docs.openshift.com/container-platform/3.11/install/configuring_inventory_file.html#advanced-install-custom-certificates

@@ -7,6 +7,7 @@
       - openshift-ansible
       - vim
       - tmux
+      - httpd-tools
       - https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
   package: name={{ pkgs }} state=present
 
@@ -83,6 +84,14 @@
     path: "/etc/letsencrypt/archive/{{ api_fqdn }}/privkey1.pem"
     state: file
     mode: 0704
+
+- name: generate ocp admin password
+  command: htpasswd -n -b admin "{{ ocp_admin_pw }}"
+  register: htpasswd_entry
+
+- name: put admin password into variable
+  set_fact:
+    admin_pw_hash: "{{ htpasswd_entry.stdout.split(':')[1] }}"
 
 - name: Create Inventory file
   template:
